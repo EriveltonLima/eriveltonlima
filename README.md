@@ -1,6 +1,3 @@
-<div align="center">
-  <img height="200" src="https://github.com/eriveltonlima.png" alt="Erivelton de Lima da Cruz" />
-</div>
 
 ###
 
