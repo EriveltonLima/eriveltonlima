@@ -32,7 +32,7 @@
 <h3 align="left">🛠️ Tecnologias e Ferramentas</h3>
 
 <div align="left">
-  <img src="https://skillicons.dev/icons?i=bash,linux,powershell,git,github,docker,html,css,js,python,vscode,vim" />
+  <img src="https://skillicons.dev/icons?i=bash,linux,powershell,git,github,docker,html,css,js,ts,react,python,vscode,vim,supabase,vite" />
 </div>
 
 ###
@@ -46,14 +46,32 @@
 
 ###
 
-<h3 align="left">🚀 Destaques</h3>
+<h3 align="left">🚀 Destaques do Portfólio</h3>
 
 <div align="center">
-  <a href="https://github.com/eriveltonlima/scripts">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=scripts&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="Scripts Collection" />
-  </a>
   <a href="https://github.com/eriveltonlima/antigravity-framework">
     <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=antigravity-framework&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="Antigravity Framework" />
+  </a>
+  <a href="https://github.com/eriveltonlima/orbit-v4">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=orbit-v4&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="ORBIT v4" />
+  </a>
+</div>
+<br>
+<div align="center">
+  <a href="https://github.com/eriveltonlima/gerador-de-simulado-interativo">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=gerador-de-simulado-interativo&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="Gerador de Simulado" />
+  </a>
+  <a href="https://github.com/eriveltonlima/gvr-decision">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=gvr-decision&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="GVR Decision" />
+  </a>
+</div>
+<br>
+<div align="center">
+  <a href="https://github.com/eriveltonlima/Saboteur">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=Saboteur&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="Saboteur Game" />
+  </a>
+  <a href="https://github.com/eriveltonlima/knup-atalhos">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=knup-atalhos&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="Knup Numpad" />
   </a>
 </div>
 
@@ -66,11 +84,11 @@
 
 # Minhas especialidades
 TECHNICAL_SKILLS=(
-  "Bash Scripting"
-  "Administração Linux"
-  "Automação de Processos"
+  "Bash Scripting & Automation"
+  "Administração Linux / DevOps"
+  "React & TypeScript"
+  "Python (IA & Data Science)"
   "Git & GitHub Workflow"
-  "Docker & Containers"
 )
 
 EDUCATIONAL_SKILLS=(
@@ -90,10 +108,6 @@ echo "Ready to deploy solutions!"
 ```
 
 ###
-
-<div align="center">
-  <img src="https://raw.githubusercontent.com/eriveltonlima/eriveltonlima/output/snake.svg" alt="Snake animation" />
-</div>
 
 <div align="center">
   <img src="https://komarev.com/ghpvc/?username=eriveltonlima&label=Profile%20Views&color=0AE448&style=flat-square" alt="profile views" />
