@@ -1,166 +1,93 @@
-
 ###
+
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&duration=3000&pause=1000&color=0AE448&center=true&vCenter=true&width=435&lines=Linguista+%2B+DevOps;Gestão+Pública+%26+Tech;Educação+4.0;Erivelton+Lima" alt="Typing SVG" />
+</div>
 
 <div align="center">
   <a href="https://www.linkedin.com/in/eriveltonlima/" target="_blank">
     <img src="https://img.shields.io/static/v1?message=LinkedIn&logo=linkedin&label=&color=0077B5&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="linkedin logo"  />
   </a>
-  <a href="mailto:erivelton@exemplo.com" target="_blank">
+  <a href="mailto:erivelton.lima@ufpel.edu.br" target="_blank">
     <img src="https://img.shields.io/static/v1?message=Gmail&logo=gmail&label=&color=D14836&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="gmail logo"  />
   </a>
-  <a href="https://eriveltonlima.github.io/eriveltonlima" target="_blank">
+  <a href="https://eriveltonlima.github.io" target="_blank">
     <img src="https://img.shields.io/static/v1?message=Portfolio&logo=github&label=&color=181717&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="portfolio logo"  />
   </a>
 </div>
 
 ###
 
-
-
-###
-
 <h3 align="left">🎯 Sobre Mim</h3>
 
 - 🏛️ **Técnico em Assuntos Educacionais** na UFPEL - Gabinete da Vice-reitoria
-- 🎓 **Formação:** Letras - Português/Francês
+- 🎓 **Formação:** Letras - Português/Francês | Mestrando em Política Social
 - 📍 **Localização:** Laranjal, Rio Grande do Sul, Brasil
-- 💻 **Apaixonado por:** Automação, Scripts Linux e Tecnologia Educacional
-- 🔧 **Especialista em:** Desenvolvimento de soluções que otimizam processos educacionais
-- 🌱 **Atualmente aprendendo:** Novas tecnologias para automação de sistemas
-- 🤝 **Procurando colaborar em:** Projetos de código aberto e ferramentas educacionais
+- 💻 **Apaixonado por:** Automação, Scripts Linux (Bash/PowerShell) e IA
+- 🔧 **Foco:** Soluções de Código Aberto para Gestão Pública e Educação
+- 🌱 **Atualmente explorando:** Agentes de IA Autônomos e Infraestrutura como Código
 
 ###
 
 <h3 align="left">🛠️ Tecnologias e Ferramentas</h3>
 
 <div align="left">
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg" height="40" alt="bash logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" height="40" alt="linux logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" height="40" alt="git logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" height="40" alt="github logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" height="40" alt="docker logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" height="40" alt="html5 logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" height="40" alt="css3 logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" height="40" alt="javascript logo"  />
+  <img src="https://skillicons.dev/icons?i=bash,linux,powershell,git,github,docker,html,css,js,python,vscode,vim" />
 </div>
 
 ###
 
-<h3 align="left">📊 Estatísticas do GitHub</h3>
+<h3 align="left">📊 Estatísticas</h3>
 
 <div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=eriveltonlima&hide_title=false&hide_rank=false&show_icons=true&include_all_commits=true&count_private=true&disable_animations=false&theme=dracula&locale=pt-br&hide_border=false&order=1" height="150" alt="stats graph"  />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs?username=eriveltonlima&locale=pt-br&hide_title=false&layout=compact&card_width=320&langs_count=5&theme=dracula&hide_border=false&order=2" height="150" alt="languages graph"  />
+  <img src="https://github-readme-stats.vercel.app/api?username=eriveltonlima&show_icons=true&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true&count_private=true" height="150" alt="stats graph" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs?username=eriveltonlima&layout=compact&langs_count=6&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" height="150" alt="languages graph" />
 </div>
 
 ###
 
-<h3 align="left">🚀 Projetos em Destaque</h3>
+<h3 align="left">🚀 Destaques</h3>
 
 <div align="center">
   <a href="https://github.com/eriveltonlima/scripts">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=scripts&theme=dracula&hide_border=false" alt="Scripts Collection" />
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=scripts&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="Scripts Collection" />
+  </a>
+  <a href="https://github.com/eriveltonlima/antigravity-framework">
+    <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=antigravity-framework&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="Antigravity Framework" />
   </a>
 </div>
 
-### 📝 Principais Repositórios
-
-- **[Scripts Collection](https://github.com/eriveltonlima/scripts)** - Coleção de scripts bash para administração de sistemas Linux
-  - 🖥️ **DiskView Ultra:** Visualizador interativo de espaço em disco
-  - ⚡ **Speed APT:** Otimizador de velocidade para APT e sistema
-  - 🔧 **PathManager:** Gerenciador de scripts no PATH
-  - 📊 **Status Servidor:** Monitor completo de status do servidor
-
 ###
 
-<h3 align="left">💼 Experiência Profissional</h3>
+<h3 align="left">🌟 Skills</h3>
 
-**🏛️ UFPEL - Universidade Federal de Pelotas**
-- **Cargo:** Técnico em Assuntos Educacionais
-- **Setor:** Gabinete da Vice-reitoria
-- **Atividades:**
-  - Apoio técnico-administrativo em assuntos educacionais
-  - Desenvolvimento de scripts e automações para otimização de processos
-  - Suporte em projetos de tecnologia educacional
-  - Gestão de sistemas e ferramentas administrativas
-
-###
-
-<h3 align="left">🎓 Formação Acadêmica</h3>
-
-- **Graduação:** Letras - Português/Francês
-- **Competências:** Linguística, Literatura, Ensino de Idiomas
-- **Aplicação:** Base teórica e prática para atuação na área educacional
-
-###
-
-<h3 align="left">🌟 Habilidades Principais</h3>
-
+```bash
 #!/bin/bash
 
-Minhas especialidades
+# Minhas especialidades
 TECHNICAL_SKILLS=(
-"Bash Script
-ng" "Administraçã
-Linux" "Automação
-e Processos"
-"Git &
-GitHub"
-Do
+  "Bash Scripting"
+  "Administração Linux"
+  "Automação de Processos"
+  "Git & GitHub Workflow"
+  "Docker & Containers"
+)
 
 EDUCATIONAL_SKILLS=(
-"Assuntos Educacion
-is" "Gestão Adminis
-rativa" "Portug
-ês/Francês" "Tecnolo
-ia
+  "Gestão Pública"
+  "Política Social"
+  "Tecnologia Educacional"
+  "Português/Francês"
+)
 
 SOFT_SKILLS=(
-"Resolução de Proble
-as" "Trabalho em
-Equipe" "
-omunicação
+  "Liderança"
+  "Resolução de Problemas"
+  "Comunicação Assertiva"
+)
 
-text
-
-###
-
-<h3 align="left">📈 Atividade no GitHub</h3>
-
-<div align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=eriveltonlima&theme=dracula&hide_border=false&hide_title=false&area=true&custom_title=Gráfico%20de%20Contribuições" width="100%" alt="activity graph" />
-</div>
-
-###
-
-<h3 align="left">🏆 Conquistas GitHub</h3>
-
-<div align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=eriveltonlima&theme=dracula&no-frame=false&no-bg=false&margin-w=4&row=1" alt="trophy graph" />
-</div>
-
-###
-
-<h3 align="left">📫 Como me encontrar</h3>
-
-- 🌐 **Portfolio:** [eriveltonlima.github.io/eriveltonlima](https://eriveltonlima.github.io/eriveltonlima)
-- 💼 **LinkedIn:** [linkedin.com/in/eriveltonlima](https://linkedin.com/in/eriveltonlima)
-- 📧 **Email:** erivelton@exemplo.com
-- 🏛️ **Instituição:** UFPEL - Gabinete da Vice-reitoria
-- 📍 **Localização:** Laranjal, Rio Grande do Sul, Brasil
-
-###
-
-<h3 align="left">💡 Filosofia de Trabalho</h3>
-
-> *"Combino conhecimentos em linguística, educação e tecnologia para criar ferramentas e scripts que otimizam o trabalho no ambiente universitário, sempre buscando inovação e eficiência."*
+echo "Ready to deploy solutions!"
+```
 
 ###
 
@@ -168,15 +95,13 @@ text
   <img src="https://raw.githubusercontent.com/eriveltonlima/eriveltonlima/output/snake.svg" alt="Snake animation" />
 </div>
 
-###
-
 <div align="center">
-  <img src="https://komarev.com/ghpvc/?username=eriveltonlima&label=Visualizações%20do%20Perfil&color=0e75b6&style=flat" alt="profile views" />
+  <img src="https://komarev.com/ghpvc/?username=eriveltonlima&label=Profile%20Views&color=0AE448&style=flat-square" alt="profile views" />
 </div>
 
 ---
 
 <div align="center">
-  <p><strong>💻 Desenvolvido com ❤️ por Erivelton de Lima da Cruz</strong></p>
-  <p><em>"Automatizando processos, otimizando sistemas e contribuindo para a educação através da tecnologia"</em></p>
+  <p><strong>💻 Desenvolvido por Erivelton Lima</strong></p>
+  <p><em>"Automatizando processos, otimizando sistemas."</em></p>
 </div>
