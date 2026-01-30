@@ -25,7 +25,7 @@
 - 📍 **Localização:** Laranjal, Rio Grande do Sul, Brasil
 - 💻 **Apaixonado por:** Automação, Scripts Linux (Bash/PowerShell) e IA
 - 🔧 **Foco:** Soluções de Código Aberto para Gestão Pública e Educação
-- 🌱 **Atualmente explorando:** Agentes de IA Autônomos e Infraestrutura como Código
+- 🌱 **Atualmente explorando:** Ecossistema Clawdbot e Agentes de IA Autônomos (como o Crawcraw 🐦‍⬛)
 
 ###
 
