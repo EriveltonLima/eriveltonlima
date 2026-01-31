@@ -1,0 +1,30 @@
+<svg width="435" height="80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style>
+    @keyframes typing {
+      0% { opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .typing-line {
+      font-family: 'Fira Code', 'Courier New', monospace;
+      font-size: 22px;
+      fill: #0AE448;
+      text-anchor: middle;
+      opacity: 0;
+    }
+    .line1 { animation: typing 15s infinite; }
+    .line2 { animation: typing 15s infinite 3s; }
+    .line3 { animation: typing 15s infinite 6s; }
+    .line4 { animation: typing 15s infinite 9s; }
+    .line5 { animation: typing 15s infinite 12s; }
+  </style>
+  
+  <rect width="435" height="80" fill="#151515" rx="5"/>
+  
+  <text x="50%" y="30" class="typing-line line1">Human 3.0 in Progress</text>
+  <text x="50%" y="30" class="typing-line line2">AI Augmented Human</text>
+  <text x="50%" y="30" class="typing-line line3">Personal AI Infrastructure</text>
+  <text x="50%" y="30" class="typing-line line4">Gestão Educacional & Tech</text>
+  <text x="50%" y="30" class="typing-line line5">Erivelton Lima</text>
+</svg>
