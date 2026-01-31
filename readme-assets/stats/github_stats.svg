@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <style>
+    .title { font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; fill: #0AE448; }
+    .stat { font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #FFFFFF; }
+    .label { font-family: Arial, sans-serif; font-size: 12px; fill: #9F9F9F; }
+    .bg { fill: #151515; }
+  </style>
+  
+  <rect width="400" height="200" rx="10" class="bg"/>
+  
+  <text x="200" y="30" text-anchor="middle" class="title">GitHub Statistics</text>
+  
+  <!-- Linha 1 -->
+  <g transform="translate(50, 70)">
+    <text x="0" y="0" class="stat">24+</text>
+    <text x="0" y="20" class="label">Repositories</text>
+  </g>
+  
+  <g transform="translate(150, 70)">
+    <text x="0" y="0" class="stat">42</text>
+    <text x="0" y="20" class="label">Followers</text>
+  </g>
+  
+  <g transform="translate(250, 70)">
+    <text x="0" y="0" class="stat">58</text>
+    <text x="0" y="20" class="label">Stars</text>
+  </g>
+  
+  <!-- Linha 2 -->
+  <g transform="translate(50, 140)">
+    <text x="0" y="0" class="stat">45</text>
+    <text x="0" y="20" class="label">Commits/Month</text>
+  </g>
+  
+  <g transform="translate(150, 140)">
+    <text x="0" y="0" class="stat">1280+</text>
+    <text x="0" y="20" class="label">Contributions</text>
+  </g>
+  
+  <g transform="translate(250, 140)">
+    <text x="0" y="0" class="stat">2020</text>
+    <text x="0" y="20" class="label">Since</text>
+  </g>
+</svg>

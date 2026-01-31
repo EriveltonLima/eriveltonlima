@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250" viewBox="0 0 400 250">
+  <style>
+    .title { font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; fill: #0AE448; }
+    .lang-name { font-family: Arial, sans-serif; font-size: 14px; fill: #FFFFFF; }
+    .lang-percent { font-family: Arial, sans-serif; font-size: 12px; fill: #9F9F9F; }
+    .bg { fill: #151515; }
+  </style>
+  
+  <rect width="400" height="250" rx="10" class="bg"/>
+  
+  <text x="200" y="30" text-anchor="middle" class="title">Top Languages</text>
+  
+  <!-- Python -->
+  <rect x="50" y="70" width="105" height="15" fill="#0AE448" rx="3"/>
+  <text x="45" y="81" text-anchor="end" class="lang-name">Python</text>
+  <text x="165" y="81" class="lang-percent">35%</text>
+  
+  <!-- JavaScript -->
+  <rect x="50" y="100" width="75" height="15" fill="#0AE448" rx="3"/>
+  <text x="45" y="111" text-anchor="end" class="lang-name">JavaScript</text>
+  <text x="135" y="111" class="lang-percent">25%</text>
+  
+  <!-- TypeScript -->
+  <rect x="50" y="130" width="60" height="15" fill="#0AE448" rx="3"/>
+  <text x="45" y="141" text-anchor="end" class="lang-name">TypeScript</text>
+  <text x="120" y="141" class="lang-percent">20%</text>
+  
+  <!-- Shell -->
+  <rect x="50" y="160" width="45" height="15" fill="#0AE448" rx="3"/>
+  <text x="45" y="171" text-anchor="end" class="lang-name">Shell</text>
+  <text x="105" y="171" class="lang-percent">15%</text>
+  
+  <!-- Other -->
+  <rect x="50" y="190" width="15" height="15" fill="#0AE448" rx="3"/>
+  <text x="45" y="201" text-anchor="end" class="lang-name">Other</text>
+  <text x="75" y="201" class="lang-percent">5%</text>
+</svg>
