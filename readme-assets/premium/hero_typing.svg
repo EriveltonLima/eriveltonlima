@@ -1,0 +1,63 @@
+<svg width="500" height="120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0AE448"/>
+      <stop offset="50%" stop-color="#4ECDC4"/>
+      <stop offset="100%" stop-color="#0AE448"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <style>
+    @keyframes typing {
+      0% { opacity: 0; transform: translateY(10px); }
+      10% { opacity: 1; transform: translateY(0); }
+      90% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-10px); }
+    }
+    @keyframes cursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .typing-text {
+      font-family: 'Fira Code', 'JetBrains Mono', monospace;
+      font-size: 24px;
+      font-weight: 600;
+      fill: url(#gradient);
+      text-anchor: middle;
+      opacity: 0;
+      filter: url(#glow);
+    }
+    .line1 { animation: typing 4s infinite; }
+    .line2 { animation: typing 4s infinite 1s; }
+    .line3 { animation: typing 4s infinite 2s; }
+    .line4 { animation: typing 4s infinite 3s; }
+    .cursor {
+      fill: #0AE448;
+      animation: cursor 1s infinite;
+    }
+  </style>
+  
+  <!-- Fundo gradiente -->
+  <rect width="500" height="120" rx="15" fill="#0A0A0A" stroke="url(#gradient)" stroke-width="2"/>
+  
+  <!-- Linhas de texto -->
+  <text x="50%" y="45" class="typing-text line1">🚀 Human 3.0 in Progress</text>
+  <text x="50%" y="45" class="typing-text line2">🤖 AI Augmented Human</text>
+  <text x="50%" y="45" class="typing-text line3">⚡ Personal AI Infrastructure</text>
+  <text x="50%" y="45" class="typing-text line4">🎓 Gestão Educacional & Tech</text>
+  
+  <!-- Cursor animado -->
+  <rect x="248" y="30" width="4" height="25" class="cursor" rx="2"/>
+  
+  <!-- Subtítulo fixo -->
+  <text x="50%" y="85" font-family="'Fira Code', monospace" font-size="18" fill="#9F9F9F" text-anchor="middle">
+    Erivelton Lima • Building AI that upgrades humans
+  </text>
+</svg>

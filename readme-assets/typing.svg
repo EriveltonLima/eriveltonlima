@@ -1,4 +1,4 @@
-<svg width="435" height="80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="435" height="100" xmlns="http://www.w3.org/2000/svg">
   <style>
     @keyframes typing {
       0% { opacity: 0; }
@@ -20,11 +20,20 @@
     .line5 { animation: typing 15s infinite 12s; }
   </style>
   
-  <rect width="435" height="80" fill="#151515" rx="5"/>
+  <!-- Fundo -->
+  <rect width="435" height="100" fill="#151515" rx="10"/>
   
-  <text x="50%" y="30" class="typing-line line1">Human 3.0 in Progress</text>
-  <text x="50%" y="30" class="typing-line line2">AI Augmented Human</text>
-  <text x="50%" y="30" class="typing-line line3">Personal AI Infrastructure</text>
-  <text x="50%" y="30" class="typing-line line4">Gestão Educacional & Tech</text>
-  <text x="50%" y="30" class="typing-line line5">Erivelton Lima</text>
+  <!-- Linhas de texto em posições diferentes -->
+  <text x="50%" y="35" class="typing-line line1">Human 3.0 in Progress</text>
+  <text x="50%" y="35" class="typing-line line2">AI Augmented Human</text>
+  <text x="50%" y="35" class="typing-line line3">Personal AI Infrastructure</text>
+  <text x="50%" y="35" class="typing-line line4">Gestão Educacional & Tech</text>
+  <text x="50%" y="35" class="typing-line line5">Erivelton Lima</text>
+  
+  <!-- Indicador de digitação -->
+  <g id="cursor" opacity="0.7">
+    <rect x="215" y="40" width="2" height="20" fill="#0AE448">
+      <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+    </rect>
+  </g>
 </svg>

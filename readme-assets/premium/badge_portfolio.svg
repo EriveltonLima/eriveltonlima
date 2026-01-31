@@ -1,0 +1,28 @@
+<svg width="140" height="40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#181717"/>
+      <stop offset="100%" stop-color="#0D0D0D"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0AE448" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <rect width="140" height="40" rx="8" fill="url(#bg)" filter="url(#shadow)"/>
+  <rect width="140" height="40" rx="8" fill="transparent" stroke="rgba(10,228,72,0.3)" stroke-width="1"/>
+  
+  <g transform="translate(15, 12)">
+    <!-- Ícone GitHub/Portfolio -->
+    <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16l-4-4 1.4-1.4 2.6 2.6 6.6-6.6 1.4 1.4-8 8z" 
+          fill="#0AE448"/>
+    
+    <!-- Texto -->
+    <text x="28" y="18" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">
+      Portfolio
+    </text>
+    
+    <!-- Badge de status -->
+    <circle cx="120" cy="8" r="4" fill="#0AE448"/>
+  </g>
+</svg>

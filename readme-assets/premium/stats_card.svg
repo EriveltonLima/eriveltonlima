@@ -1,0 +1,121 @@
+<svg width="800" height="300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0A0A0A"/>
+      <stop offset="100%" stop-color="#151515"/>
+    </linearGradient>
+    <linearGradient id="barGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0AE448"/>
+      <stop offset="50%" stop-color="#4ECDC4"/>
+      <stop offset="100%" stop-color="#0AE448"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <style>
+    @keyframes grow {
+      from { width: 0; }
+      to { width: var(--target-width); }
+    }
+    .stat-bar {
+      animation: grow 1.5s ease-out;
+      animation-fill-mode: both;
+    }
+    .stat-number {
+      font-family: 'Fira Code', monospace;
+      font-size: 32px;
+      font-weight: 700;
+      fill: url(#barGradient);
+    }
+    .stat-label {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 14px;
+      fill: #9F9F9F;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .card-title {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 24px;
+      font-weight: 600;
+      fill: #FFFFFF;
+    }
+  </style>
+  
+  <!-- Fundo do card -->
+  <rect width="800" height="300" rx="20" fill="url(#bg)" stroke="#333" stroke-width="1"/>
+  
+  <!-- Título -->
+  <text x="400" y="50" text-anchor="middle" class="card-title">📊 GitHub Analytics</text>
+  
+  <!-- Grid de stats -->
+  <g transform="translate(50, 90)">
+    <!-- Linha 1 -->
+    <g transform="translate(0, 0)">
+      <rect width="160" height="80" rx="10" fill="#1A1A1A" stroke="#333" stroke-width="1"/>
+      <text x="80" y="35" text-anchor="middle" class="stat-number">24+</text>
+      <text x="80" y="60" text-anchor="middle" class="stat-label">Repositories</text>
+    </g>
+    
+    <g transform="translate(180, 0)">
+      <rect width="160" height="80" rx="10" fill="#1A1A1A" stroke="#333" stroke-width="1"/>
+      <text x="80" y="35" text-anchor="middle" class="stat-number">42</text>
+      <text x="80" y="60" text-anchor="middle" class="stat-label">Followers</text>
+    </g>
+    
+    <g transform="translate(360, 0)">
+      <rect width="160" height="80" rx="10" fill="#1A1A1A" stroke="#333" stroke-width="1"/>
+      <text x="80" y="35" text-anchor="middle" class="stat-number">58</text>
+      <text x="80" y="60" text-anchor="middle" class="stat-label">Total Stars</text>
+    </g>
+    
+    <g transform="translate(540, 0)">
+      <rect width="160" height="80" rx="10" fill="#1A1A1A" stroke="#333" stroke-width="1"/>
+      <text x="80" y="35" text-anchor="middle" class="stat-number">1.2k+</text>
+      <text x="80" y="60" text-anchor="middle" class="stat-label">Profile Views</text>
+    </g>
+  </g>
+  
+  <!-- Barras de linguagens -->
+  <g transform="translate(50, 200)">
+    <text x="0" y="-10" class="stat-label" font-size="16">Top Languages</text>
+    
+    <!-- Python -->
+    <g>
+      <rect x="0" y="0" width="280" height="20" rx="10" fill="#333"/>
+      <rect class="stat-bar" x="0" y="0" width="280" height="20" rx="10" fill="url(#barGradient)" filter="url(#glow)"
+            style="--target-width: 280px;"/>
+      <text x="290" y="15" class="stat-label">Python • 35%</text>
+    </g>
+    
+    <!-- JavaScript -->
+    <g transform="translate(0, 30)">
+      <rect x="0" y="0" width="200" height="20" rx="10" fill="#333"/>
+      <rect class="stat-bar" x="0" y="0" width="200" height="20" rx="10" fill="url(#barGradient)" filter="url(#glow)"
+            style="--target-width: 200px;"/>
+      <text x="210" y="15" class="stat-label">JavaScript • 25%</text>
+    </g>
+    
+    <!-- TypeScript -->
+    <g transform="translate(0, 60)">
+      <rect x="0" y="0" width="160" height="20" rx="10" fill="#333"/>
+      <rect class="stat-bar" x="0" y="0" width="160" height="20" rx="10" fill="url(#barGradient)" filter="url(#glow)"
+            style="--target-width: 160px;"/>
+      <text x="170" y="15" class="stat-label">TypeScript • 20%</text>
+    </g>
+  </g>
+  
+  <!-- Decoração -->
+  <circle cx="750" cy="50" r="8" fill="#0AE448" opacity="0.5">
+    <animate attributeName="r" values="8;12;8" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="50" cy="250" r="6" fill="#4ECDC4" opacity="0.5">
+    <animate attributeName="cy" values="250;245;250" dur="3s" repeatCount="indefinite"/>
+  </circle>
+</svg>

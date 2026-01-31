@@ -1,0 +1,28 @@
+<svg width="130" height="40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0077B5"/>
+      <stop offset="100%" stop-color="#005582"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0077B5" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <rect width="130" height="40" rx="8" fill="url(#bg)" filter="url(#shadow)"/>
+  <rect width="130" height="40" rx="8" fill="transparent" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  
+  <g transform="translate(15, 12)">
+    <!-- Ícone LinkedIn -->
+    <path d="M4.98 3.5c0 1.38-1.12 2.5-2.5 2.5s-2.5-1.12-2.5-2.5 1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5zM5 8H0v9h5V8zm7.982 0H8.014v9h4.969v-4.92c0-4.03 5.011-4.33 5.011 0V17H24v-5.88c0-7.06-8.025-6.82-10.018-3.38V8z" 
+          fill="#FFFFFF"/>
+    
+    <!-- Texto -->
+    <text x="28" y="18" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">
+      LinkedIn
+    </text>
+    
+    <!-- Badge de status -->
+    <circle cx="110" cy="8" r="4" fill="#0AE448"/>
+  </g>
+</svg>
