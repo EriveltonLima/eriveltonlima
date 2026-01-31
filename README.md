@@ -1,7 +1,7 @@
 ###
 
 <div align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&duration=3000&pause=1000&color=0AE448&center=true&vCenter=true&width=435&lines=Linguista+%2B+DevOps;Gestão+Pública+%26+Tech;Educação+4.0;Erivelton+Lima" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&duration=3000&pause=1000&color=0AE448&center=true&vCenter=true&width=435&lines=Human+3.0+in+Progress;AI+Augmented+Human;Personal+AI+Infrastructure;Gestão+Educacional+%26+Tech;Erivelton+Lima" alt="Typing SVG" />
 </div>
 
 <div align="center">
@@ -18,18 +18,27 @@
 
 ###
 
-<h3 align="left">🎯 Sobre Mim</h3>
+<h3 align="left">🎯 Missão (TELOS)</h3>
 
-- 🏛️ **Técnico em Assuntos Educacionais** na UFPEL - Gabinete da Vice-reitoria
-- 🎓 **Formação:** Letras - Português/Francês | Mestrando em Política Social
-- 📍 **Localização:** Laranjal, Rio Grande do Sul, Brasil
-- 💻 **Apaixonado por:** Automação, Scripts Linux (Bash/PowerShell) e IA
-- 🔧 **Foco:** Soluções de Código Aberto para Gestão Pública e Educação
-- 🌱 **Atualmente explorando:** Agentes de IA Autônomos e Infraestrutura como Código
+> *"Ativando o potencial humano através da simbiose entre gestão pedagógica, dados (Substrate) e infraestrutura de IA (PAI)."*
+
+- 🏛️ **Gestor Pedagógico & Técnico** na UFPEL (Gabinete da Vice-reitoria).
+- 🎓 **Fronteira de Conhecimento:** Letras (PT/FR) | Mestrando em Política Social.
+- 💻 **Foco:** Transformar a "cognição pesada" em fluxos automatizados para focar no que é essencialmente humano: criar e liderar.
+- 🌱 **Evoluindo para:** Um humano 100% aumentado por IA, operando em ciclos de *Observe → Think → Plan → Execute → Learn*.
 
 ###
 
-<h3 align="left">🛠️ Tecnologias e Ferramentas</h3>
+<h3 align="left">🤖 Personal AI Infrastructure (PAI)</h3>
+
+Atualmente operando com o **Crawcraw**, meu assistente digital rodando em **OpenClaw**, que gerencia meu conhecimento, automações e memória persistente (Deep Context).
+
+- **Frameworks:** Fabric (Patterns), Telos (Purpose mapping), Substrate (Data-driven evidence).
+- **Core:** Automação via Bash/PowerShell integrada a Agentes LLM.
+
+###
+
+<h3 align="left">🛠️ Stack Tecnológica</h3>
 
 <div align="left">
   <img src="https://skillicons.dev/icons?i=bash,linux,powershell,git,github,docker,html,css,js,ts,react,python,vscode,vim,supabase,vite" />
@@ -46,14 +55,14 @@
 
 ###
 
-<h3 align="left">🚀 Destaques do Portfólio</h3>
+<h3 align="left">🚀 Projetos em Destaque</h3>
 
 <div align="center">
   <a href="https://github.com/eriveltonlima/antigravity-framework">
     <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=antigravity-framework&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="Antigravity Framework" />
   </a>
-  <a href="https://github.com/eriveltonlima/orbit-v4">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=orbit-v4&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="ORBIT v4" />
+  <a href="https://github.com/eriveltonlima/Infrastructure">
+    <img src="https://img.shields.io/static/v1?message=DIY-NAS&logo=linux&label=Project&color=0AE448&style=for-the-badge" height="35" alt="DIY-NAS" />
   </a>
 </div>
 <br>
@@ -65,46 +74,31 @@
     <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=gvr-decision&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="GVR Decision" />
   </a>
 </div>
-<br>
-<div align="center">
-  <a href="https://github.com/eriveltonlima/Saboteur">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=Saboteur&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="Saboteur Game" />
-  </a>
-  <a href="https://github.com/eriveltonlima/knup-atalhos">
-    <img src="https://github-readme-stats.vercel.app/api/pin/?username=eriveltonlima&repo=knup-atalhos&title_color=0AE448&icon_color=0AE448&text_color=9f9f9f&bg_color=151515&hide_border=true" alt="Knup Numpad" />
-  </a>
-</div>
 
 ###
 
-<h3 align="left">🌟 Skills</h3>
+<h3 align="left">🌟 Skills & Filosofia</h3>
 
 ```bash
 #!/bin/bash
 
-# Minhas especialidades
-TECHNICAL_SKILLS=(
-  "Bash Scripting & Automation"
-  "Administração Linux / DevOps"
-  "React & TypeScript"
-  "Python (IA & Data Science)"
-  "Git & GitHub Workflow"
+# Princípios de Operação
+PRINCIPLES=(
+  "Clear Thinking First"
+  "Code Before Prompts"
+  "UNIX Philosophy: Do one thing well"
+  "Deep Context (Telos) over Generic Chats"
 )
 
-EDUCATIONAL_SKILLS=(
-  "Gestão Pública"
-  "Política Social"
-  "Tecnologia Educacional"
-  "Português/Francês"
-)
+# Expertise
+function current_state() {
+  echo "Gestão Pública 🏛️"
+  echo "Política Social 📊"
+  echo "IA Agentica 🤖"
+  echo "Automação SRE ⚙️"
+}
 
-SOFT_SKILLS=(
-  "Liderança"
-  "Resolução de Problemas"
-  "Comunicação Assertiva"
-)
-
-echo "Ready to deploy solutions!"
+ready_to_augment_humanity=true
 ```
 
 ###
@@ -116,6 +110,6 @@ echo "Ready to deploy solutions!"
 ---
 
 <div align="center">
-  <p><strong>💻 Desenvolvido por Erivelton Lima</strong></p>
-  <p><em>"Automatizando processos, otimizando sistemas."</em></p>
+  <p><strong>💻 Integrado por Erivelton Lima</strong></p>
+  <p><em>"Building AI that upgrades humans."</em></p>
 </div>
