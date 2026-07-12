@@ -1,269 +1,102 @@
 <div align="center">
 
-<!-- HERO SECTION -->
-<img src="./readme-assets/premium/hero_typing.svg" alt="Erivelton Lima - AI Augmented Human" width="100%" />
+<img src="./readme-assets/academic-tech/hero.svg" alt="Erivelton Lima — Educação, Dados e Inteligência Artificial" width="100%" />
 
-<br>
+<br />
 
-<!-- SOCIAL BADGES -->
-<div>
-  <a href="https://www.linkedin.com/in/eriveltonlima/" target="_blank">
-    <img src="./readme-assets/premium/badge_linkedin.svg" alt="LinkedIn" height="40" />
-  </a>
-  <a href="mailto:erivelton.lima@ufpel.edu.br" target="_blank">
-    <img src="./readme-assets/premium/badge_gmail.svg" alt="Gmail" height="40" />
-  </a>
-  <a href="https://eriveltonlima.github.io" target="_blank">
-    <img src="./readme-assets/premium/badge_portfolio.svg" alt="Portfolio" height="40" />
-  </a>
-</div>
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil_profissional-0A5F73?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/eriveltonlima/)
+[![Portfólio](https://img.shields.io/badge/Portfólio-Ver_projetos-B38A3E?style=flat-square&logo=githubpages&logoColor=white)](https://eriveltonlima.github.io)
+[![E-mail](https://img.shields.io/badge/E--mail-Contato-384B5A?style=flat-square&logo=gmail&logoColor=white)](mailto:erivelton.lima@ufpel.edu.br)
 
 </div>
 
----
+## Sobre mim
 
-## 🎯 **TELOS Mission**
+Sou **Técnico em Assuntos Educacionais na Universidade Federal de Pelotas (UFPel)**, formado em **Letras — Português e Francês** e mestrando em **Política Social**.
 
-> ***"Activating human potential through the symbiosis of pedagogical management, data (Substrate), and AI infrastructure (PAI)."***
+Investigo e construo formas de aproximar **educação, gestão, dados e inteligência artificial**. Meu trabalho parte de uma pergunta simples: como reduzir o peso das tarefas repetitivas sem perder aquilo que exige interpretação, responsabilidade e presença humana?
 
-### **🏛️ Professional Identity**
-- **Pedagogical & Technical Manager** at UFPEL (Vice-Rector's Office)
-- **Knowledge Frontier:** Literature (PT/FR) | Master's in Social Policy
-- **Focus:** Transforming "heavy cognition" into automated flows to focus on what is essentially human: creating and leading
-- **Evolving into:** A 100% AI-augmented human, operating in cycles of *Observe → Think → Plan → Execute → Learn*
+> Tecnologia não como substituição do pensamento, mas como infraestrutura para pensar e decidir melhor.
 
----
+<details>
+<summary><strong>English summary</strong></summary>
 
-## 🤖 **Personal AI Infrastructure (PAI)**
+I work at the intersection of **education, public management, data and artificial intelligence**. With a background in Portuguese and French Language and Literature and ongoing graduate research in Social Policy, I build practical tools that turn repetitive cognitive work into transparent, auditable workflows.
 
-Currently operating with **Crawcraw**, my digital assistant running on **OpenClaw**, which manages my knowledge, automations, and persistent memory (Deep Context).
+</details>
 
-### **Core Frameworks:**
-- **Fabric** (Patterns) - Structured AI workflows
-- **Telos** (Purpose mapping) - Goal-oriented automation
-- **Substrate** (Data-driven evidence) - Evidence-based decision making
+## Eixos de atuação
 
-### **Technical Core:**
-- Automation via Bash/PowerShell integrated with LLM Agents
-- Persistent memory and context management
-- Multi-agent orchestration
+| Educação e política social | Dados e decisão | IA e automação |
+|---|---|---|
+| Tecnologia educacional, formação humanística e gestão universitária | Sistemas de apoio à decisão e organização de evidências | Agentes, memória persistente e automação de fluxos de trabalho |
 
----
+## Projetos selecionados
 
-## 🛠️ **Technology Stack**
+### [Supermilhas](https://github.com/EriveltonLima/supermilhas)
 
-<div align="center">
+Extensão para Chrome que transforma pontos, milhas e Avios em estimativas claras em reais nos próprios sites de pesquisa de passagens-prêmio. Os cálculos acontecem localmente, sem anúncios ou telemetria.
 
-### **Infrastructure & DevOps**
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Proxmox](https://img.shields.io/badge/Proxmox-E57000?style=for-the-badge&logo=proxmox&logoColor=white)
-![ZFS](https://img.shields.io/badge/ZFS-00BFFF?style=for-the-badge&logo=openzfs&logoColor=white)
-![Bash](https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnu-bash&logoColor=white)
+`JavaScript` · `Chrome Extension` · `Manifest V3` · `Privacidade por padrão`
 
-### **Backend Development**
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+### [GVR Decision](https://github.com/EriveltonLima/gvr-decision)
 
-### **Frontend & UI**
-![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)
+Aplicação para centralizar demandas institucionais e apoiar fluxos hierárquicos de análise, aprovação e decisão.
 
-### **Tools & Platforms**
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![VSCode](https://img.shields.io/badge/VSCode-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
-![OpenClaw](https://img.shields.io/badge/OpenClaw-0AE448?style=for-the-badge&logo=github&logoColor=white)
+`React` · `Supabase` · `Tailwind CSS` · `Gestão pública`
 
-</div>
+### [ORBIT — Antigravity Autonomy Framework](https://github.com/EriveltonLima/antigravity-framework)
 
----
+Framework experimental para execução auditável de tarefas por agentes de IA, com filas, retentativas, logs, lotes paralelos e handoffs entre agentes.
 
-## 📊 **GitHub Analytics**
+`PowerShell` · `Agentes de IA` · `Automação` · `Observabilidade`
 
-<div align="center">
-  <img src="./readme-assets/premium/stats_card.svg" alt="GitHub Statistics" width="100%" />
-</div>
+### [Gerador de Simulado Interativo](https://github.com/EriveltonLima/gerador-de-simulado-interativo)
 
----
+Aplicação educacional para criação e realização de simulados interativos com apoio de IA.
 
-## 🚀 **Featured Projects**
+`TypeScript` · `React` · `IA aplicada à educação`
 
-<div align="center">
+## Laboratório pessoal de IA
 
-### **Antigravity Framework**
-<img src="./readme-assets/premium/project_antigravity.svg" alt="Antigravity Framework" width="100%" />
+Minha infraestrutura pessoal de IA é um espaço de experimentação aplicada. Nela, exploro três camadas complementares:
 
-<br>
+- **Telos:** propósito e direção antes da automação;
+- **Substrate:** dados e evidências como base das decisões;
+- **PAI:** agentes, memória e ferramentas para executar fluxos persistentes.
 
-### **Other Notable Projects**
+O ciclo de trabalho é contínuo: **observar → pensar → planejar → executar → aprender**.
 
-| Project | Description | Tech Stack | Status |
-|---------|-------------|------------|--------|
-| **[Gerador de Simulado Interativo](https://github.com/eriveltonlima/gerador-de-simulado-interativo)** | Interactive educational simulator with AI | React, TypeScript, AI | 🟢 Active |
-| **[DIY-NAS Infrastructure](https://github.com/eriveltonlima/Infrastructure)** | Homemade NAS with ZFS and automation | ZFS, Proxmox, Docker | 🟢 Production |
-| **[GVR Decision System](https://github.com/eriveltonlima/gvr-decision)** | Decision support for university management | Python, FastAPI, React | 🟡 Maintenance |
-| **[Personal Automation Suite](https://github.com/eriveltonlima/automation)** | Personal productivity automation | Bash, Python, AI Agents | 🟢 Active |
+## Ferramentas que uso
 
-</div>
+**Sistemas e automação**<br />
+Linux · Bash · PowerShell · Docker · Proxmox · ZFS · GitHub Actions
 
----
+**Aplicações e dados**<br />
+Python · FastAPI · PostgreSQL · Supabase · React · TypeScript · Tailwind CSS
 
-## 🏆 **Project Quality Metrics**
+**Conhecimento e IA**<br />
+LLMs · fluxos com agentes · Fabric · gestão de contexto · Obsidian
 
-<div align="center">
+## Formação e interesses de pesquisa
 
-| Metric | Status | Details |
-|--------|--------|---------|
-| **Code Quality** | ✅ Excellent | 100% open source, documented, tested |
-| **CI/CD** | ✅ Implemented | GitHub Actions, automated deployments |
-| **Containerization** | ✅ Complete | Docker in all projects |
-| **Documentation** | ✅ Comprehensive | READMEs, wikis, API docs |
-| **Testing** | ✅ Automated | Unit, integration, E2E tests |
-| **Performance** | ✅ Optimized | Fast load times, efficient code |
-
-</div>
-
----
-
-## 🌟 **Skills & Philosophy**
-
-```bash
-#!/bin/bash
-
-# Operating Principles
-PRINCIPLES=(
-  "Clear Thinking First"
-  "Code Before Prompts"
-  "UNIX Philosophy: Do one thing well"
-  "Deep Context (Telos) over Generic Chats"
-  "Automation as Cognitive Enhancement"
-  "Evidence-Based Decisions (Substrate)"
-)
-
-# Current Technical Stack
-TECH_STACK=(
-  "Infrastructure: Docker, Proxmox, ZFS, Bash"
-  "Backend: Python, FastAPI, Supabase, PostgreSQL"
-  "Frontend: React, TypeScript, Vite, Tailwind"
-  "AI: OpenClaw, Fabric, Agentic Flows, LLMs"
-  "Tools: Git, GitHub Actions, VSCode, Obsidian"
-  "Methodologies: Agile, DevOps, SRE, TDD"
-)
-
-# Professional Expertise
-function expertise() {
-  echo "🏛️  Pedagogical Management"
-  echo "📊 Social Policy & Analysis"
-  echo "🤖 AI Agentic Systems"
-  echo "⚙️  SRE & Automation"
-  echo "🎓 Educational Technology"
-  echo "🚀 Digital Transformation"
-}
-
-# Current Focus
-FOCUS="Building AI-augmented workflows that transform \
-       cognitive load into creative potential."
-
-ready_to_augment_humanity=true
-```
-
----
-
-## 📈 **Recent Activity**
-
-<div align="center">
-
-| Metric | Current | Trend |
-|--------|---------|-------|
-| **Monthly Commits** | 45+ | 📈 Increasing |
-| **Active Projects** | 6 | 📊 Stable |
-| **Code Reviews** | 12+ | 📈 Active |
-| **Contributions** | 1,280+ | 📈 Growing |
-| **Learning Hours** | 20+/week | 📈 Consistent |
-
-</div>
-
----
-
-## 🎓 **Academic & Professional Background**
-
-### **Education**
-- **Master's in Social Policy** (in progress) - UFPEL
-- **Literature (Portuguese/French)** - UFPEL
-- **Continuous Learning:** AI/ML, DevOps, Educational Technology
-
-### **Professional Experience**
-- **Pedagogical & Technical Manager** - UFPEL Vice-Rector's Office
-- **Educational Technology Consultant**
-- **Open Source Contributor**
-- **AI & Automation Specialist**
-
-### **Research Interests**
-- AI-augmented human cognition
-- Educational technology integration
-- Social policy data analysis
-- Personal knowledge management systems
-
----
-
-## 📬 **Connect With Me**
-
-<div align="center">
-
-| Platform | Link | Best For |
-|----------|------|----------|
-| **LinkedIn** | [Erivelton Lima](https://linkedin.com/in/eriveltonlima) | Professional networking |
-| **Email** | erivelton.lima@ufpel.edu.br | Formal communication |
-| **Portfolio** | [eriveltonlima.github.io](https://eriveltonlima.github.io) | Project showcase |
-| **GitHub** | [@EriveltonLima](https://github.com/EriveltonLima) | Code collaboration |
-
-</div>
+- Mestrado em Política Social — UFPel *(em andamento)*
+- Letras — Português e Francês — UFPel
+- Inteligência artificial e cognição humana
+- Tecnologia educacional e transformação digital
+- Dados aplicados à política social
+- Sistemas pessoais de gestão do conhecimento
 
 ---
 
 <div align="center">
 
-## 💫 **Building the Future of Human-AI Collaboration**
+### Vamos conversar?
 
-> *"The goal is not to replace humans with AI, but to create AI that upgrades humans."*
+Estou aberto a diálogos e colaborações sobre **educação, gestão pública, automação e IA aplicada**.
 
-<br>
+[LinkedIn](https://www.linkedin.com/in/eriveltonlima/) · [Portfólio](https://eriveltonlima.github.io) · [E-mail](mailto:erivelton.lima@ufpel.edu.br)
 
-**📍 Based in Pelotas, RS - Brazil**  
-**🎯 Currently:** Building personal AI infrastructure & educational technology  
-**🚀 Next:** Scaling AI-augmented workflows for cognitive enhancement
-
-<br>
-
-<sub>✨ This README is 100% self-hosted • Zero external dependencies • All assets in repository</sub>
+<sub>Pelotas, Rio Grande do Sul, Brasil</sub>
 
 </div>
-
-<!-- 
-  PREMIUM README FEATURES:
-  ✅ 100% self-hosted assets
-  ✅ Modern, professional design
-  ✅ Animated SVG elements
-  ✅ Responsive layout
-  ✅ Comprehensive sections
-  ✅ Interactive elements
-  ✅ Performance optimized
-  ✅ Accessibility compliant
-  ✅ Mobile friendly
-  ✅ SEO optimized
-  
-  ASSETS CREATED:
-  ├── premium/
-  │   ├── hero_typing.svg          # Animated hero section
-  │   ├── badge_linkedin.svg       # Premium LinkedIn badge
-  │   ├── badge_gmail.svg          # Premium Gmail badge
-  │   ├── badge_portfolio.svg      # Premium Portfolio badge
-  │   ├── stats_card.svg           # Animated stats card
-  │   ├── project_antigravity.svg  # Project showcase card
-  │   └── theme.css               # Premium CSS theme
-  └── (legacy assets preserved)
--->
