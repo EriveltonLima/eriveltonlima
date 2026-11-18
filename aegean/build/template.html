@@ -1,0 +1,528 @@
+<title>Radar Aegean Miles+Bonus</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: radar console — mapa grande à esquerda, planejador à direita, tabela de custo e rotas abaixo. Tema escuro único (estilo radar). */
+:root{
+  color-scheme:dark;
+  --bg:#08121c; --panel:#0e1b29; --panel2:#132436; --line:#1f3549; --land:#14283b; --landedge:#22405a;
+  --fg:#e3edf6; --muted:#8aa2b8; --dim:#5b7489;
+  --a3:#4fb3ff; --star:#f0b54a; --hl:#7cf2c4; --warn:#ff8a7a;
+  --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--f-body);font-size:14px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 40px}
+.wrap{max-width:1440px;margin:0 auto;display:grid;gap:18px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font-family:var(--f-display);font-weight:700;font-size:2.1rem;letter-spacing:.02em;margin:0;line-height:1;text-wrap:balance}
+h1 span{color:var(--a3)}
+.sub{color:var(--muted);margin:4px 0 0;max-width:70ch}
+h2{font-family:var(--f-display);font-weight:600;font-size:1.35rem;letter-spacing:.04em;text-transform:uppercase;margin:0}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 11px;font-size:12.5px;color:var(--fg);cursor:pointer;font-family:inherit}
+.chip[aria-pressed="false"]{opacity:.45}
+.chip:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--hl);outline-offset:2px}
+.sw{width:18px;height:3px;border-radius:2px;display:inline-block}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px}
+@media (max-width:980px){.main{grid-template-columns:1fr}}
+.mapbox{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;min-height:420px;height:min(68vh,640px)}
+canvas#map{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+canvas#map:active{cursor:grabbing}
+.hud{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.hud .tag{background:rgba(8,18,28,.82);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.hud .tag b{color:var(--fg);font-weight:500}
+.zoombtns{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:4px}
+.zoombtns button{width:32px;height:32px;border-radius:6px;border:1px solid var(--line);background:rgba(8,18,28,.85);color:var(--fg);font-size:16px;cursor:pointer}
+#tip{position:absolute;pointer-events:none;background:rgba(8,18,28,.94);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:12px;max-width:240px}
+#tip b{font-family:var(--f-mono)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:14px;align-content:start;min-width:0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:grid;gap:4px;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+input,select{background:var(--panel2);border:1px solid var(--line);color:var(--fg);border-radius:6px;padding:8px 10px;font-family:var(--f-mono);font-size:14px;width:100%}
+input{text-transform:uppercase}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{background:var(--panel2);color:var(--muted);border:0;padding:7px 12px;font-family:var(--f-mono);font-size:12.5px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--a3);color:#04111d;font-weight:600}
+.ctrls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:7px 12px;cursor:pointer;font-size:12.5px}
+.price{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pbox{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.pbox .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.pbox .v{font-family:var(--f-mono);font-size:1.25rem;font-weight:600}
+.pbox.on{border-color:var(--hl)}
+.pairlbl{font-size:12.5px;color:var(--muted)}
+.pairlbl b{color:var(--fg);font-weight:500}
+.results{display:grid;gap:6px;max-height:360px;overflow:auto;padding-right:2px}
+.res{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;display:grid;gap:4px;text-align:left;color:var(--fg);font:inherit;width:100%}
+.res.sel{border-color:var(--hl)}
+.res .path{font-family:var(--f-mono);font-size:13.5px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.res .meta{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 12px}
+.al{font-family:var(--f-mono);font-size:11px;padding:1px 6px;border-radius:4px;border:1px solid var(--line)}
+.al.a3{border-color:var(--a3);color:var(--a3)}
+.al.st{border-color:rgba(240,181,74,.6);color:var(--star)}
+.arrow{color:var(--dim)}
+.empty{color:var(--muted);font-size:13px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px}
+@media (max-width:980px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px;min-width:0;align-content:start}
+.cardhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.tscroll{overflow-x:auto}
+table.chart{border-collapse:separate;border-spacing:3px;width:100%;min-width:640px}
+table.chart th{font-family:var(--f-display);font-weight:600;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:4px;vertical-align:bottom;line-height:1.1}
+table.chart th.rh{text-align:left;white-space:nowrap}
+table.chart th .dot,.rdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+table.chart td{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:center;padding:7px 4px;border-radius:4px;font-size:13px;cursor:pointer;color:#06121c;font-weight:500;border:1px solid transparent}
+table.chart td.na{background:transparent!important;color:var(--dim);cursor:default;font-weight:400}
+table.chart td.mir{opacity:.55}
+table.chart td.sel{border-color:#fff;box-shadow:0 0 0 1px #fff}
+.note{font-size:12.5px;color:var(--muted)}
+.note b{color:var(--fg);font-weight:500}
+ul.rules{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--muted);font-size:13px}
+ul.rules b{color:var(--fg);font-weight:500}
+.spots{display:grid;gap:4px}
+.spot{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:6px 8px;border-radius:6px;background:var(--panel2);cursor:pointer;border:1px solid transparent;color:var(--fg);font:inherit;text-align:left;width:100%}
+.spot:hover{border-color:var(--line)}
+.spot .c{font-family:var(--f-mono);font-weight:600}
+.spot .r{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spot .m{font-family:var(--f-mono);font-size:12.5px}
+.spot .e{font-family:var(--f-mono);font-size:12px;color:var(--hl)}
+.netlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.netlist button{background:var(--panel2);border:1px solid var(--line);color:var(--fg);border-radius:6px;padding:6px 8px;text-align:left;font:inherit;font-size:12.5px;cursor:pointer;display:flex;justify-content:space-between;gap:6px}
+.netlist button .c{font-family:var(--f-mono);color:var(--a3);font-weight:600}
+.netlist button .n{color:var(--muted);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+table.ctab{border-collapse:collapse;width:100%;min-width:560px;font-size:13px}
+table.ctab th{position:sticky;top:0;background:var(--panel);text-align:left;font-family:var(--f-display);font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+table.ctab td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.ctab td.codes{font-family:var(--f-mono)}
+table.ctab td.codes button{background:none;border:0;color:var(--a3);font:inherit;cursor:pointer;padding:0 6px 0 0}
+footer{color:var(--dim);font-size:12px;max-width:110ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Radar <span>Aegean</span> Miles+Bonus</h1>
+      <p class="sub">Rotas da Aegean (A3) separadas dos parceiros Star Alliance, com o preço do resgate calculado pela tabela de regiões. Cada país aparece na cor da sua região de preço. Clique em um aeroporto para escolher a origem e, depois, o destino.</p>
+    </div>
+    <div class="legend" role="group" aria-label="Camadas do mapa">
+      <button class="chip" id="lyA3" aria-pressed="true"><span class="sw" style="background:var(--a3)"></span>Voos Aegean (A3)</button>
+      <button class="chip" id="lyST" aria-pressed="true"><span class="sw" style="background:var(--star)"></span>Parceiros Star Alliance</button>
+      <button class="chip" id="lyAnim" aria-pressed="true">✈ Tráfego animado</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="mapbox" id="mapbox">
+      <canvas id="map" aria-label="Mapa de rotas"></canvas>
+      <div class="hud">
+        <div class="tag" id="hudSel">Origem <b>—</b> · Destino <b>—</b></div>
+        <div class="tag" id="hudCount"></div>
+      </div>
+      <div class="zoombtns">
+        <button id="zin" aria-label="Aproximar">+</button>
+        <button id="zout" aria-label="Afastar">−</button>
+        <button id="zreset" aria-label="Ver mundo" title="Ver mundo">⌂</button>
+      </div>
+      <div id="tip" hidden></div>
+    </div>
+
+    <aside class="panel" aria-label="Planejador">
+      <h2>Planejar resgate</h2>
+      <div class="row">
+        <label for="org">Origem<input id="org" list="aplist" maxlength="3" value="POA" autocomplete="off"></label>
+        <label for="dst">Destino<input id="dst" list="aplist" maxlength="3" value="IST" autocomplete="off"></label>
+      </div>
+      <datalist id="aplist"></datalist>
+      <div class="ctrls">
+        <div class="seg" role="group" aria-label="Tipo de bilhete">
+          <button id="tOW" aria-pressed="true">Só ida (OW)</button><button id="tRT" aria-pressed="false">Ida e volta</button>
+        </div>
+        <label for="stops" style="display:flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0;font-size:12.5px">Conexões
+          <select id="stops" style="width:auto"><option value="0">0</option><option value="1" selected>até 1</option><option value="2">até 2</option></select>
+        </label>
+        <button class="btn" id="swap">⇄ Inverter</button>
+      </div>
+      <div>
+        <div class="pairlbl" id="pairlbl"></div>
+        <div class="price" id="price" style="margin-top:8px"></div>
+      </div>
+      <div class="note" id="pricenote"></div>
+      <div style="display:grid;gap:8px">
+        <h2 style="font-size:1.1rem">Itinerários possíveis</h2>
+        <div class="results" id="results"></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="grid2">
+    <section class="card" aria-labelledby="tblh">
+      <div class="cardhead">
+        <h2 id="tblh">Tabela de custo por região</h2>
+        <div class="ctrls">
+          <div class="seg" role="group" aria-label="Classe">
+            <button data-cab="0" aria-pressed="true">Y Econômica</button><button data-cab="1" aria-pressed="false">C Executiva</button><button data-cab="2" aria-pressed="false">F Primeira</button>
+          </div>
+          <div class="seg" role="group" aria-label="Tipo de valor da tabela">
+            <button id="ttOW" aria-pressed="true">OW</button><button id="ttRT" aria-pressed="false">RT</button>
+          </div>
+        </div>
+      </div>
+      <div class="tscroll"><table class="chart" id="chart"></table></div>
+      <p class="note">Valores em milhas. A tabela original é ida e volta (RT); só ida (OW) é <b>50%</b>. Clique em uma célula para destacar no mapa os aeroportos e voos entre as duas regiões. Células esmaecidas são o espelho da tabela original (mesmo preço nos dois sentidos).</p>
+    </section>
+
+    <section class="card" aria-labelledby="sph">
+      <div class="cardhead">
+        <h2 id="sph">Melhores rotas a partir de <span class="mono" id="spOrg">POA</span></h2>
+      </div>
+      <p class="note">Destinos alcançáveis com no máximo 1 conexão, ordenados por quilômetros voados a cada 1.000 milhas (Econômica, só ida). Quanto maior, melhor o aproveitamento.</p>
+      <div class="spots" id="spots"></div>
+    </section>
+  </div>
+
+  <div class="grid2">
+    <section class="card" aria-labelledby="neth">
+      <div class="cardhead"><h2 id="neth">Rede própria Aegean (A3)</h2><span class="note" id="netcount"></span></div>
+      <p class="note">Voos operados pela Aegean/Olympic. Clique em uma cidade para ver no planejador o caminho a partir da sua origem.</p>
+      <div class="netlist" id="netlist"></div>
+    </section>
+    <section class="card" aria-labelledby="rulh">
+      <h2 id="rulh">Como o preço é calculado</h2>
+      <ul class="rules">
+        <li><b>Só ida = metade da ida e volta.</b> POA → PTY: América Central e do Sul ↔ mesma região = 25.000 RT, logo <b>12.500 OW</b> na Econômica.</li>
+        <li><b>Com conexão, vale só a região de origem e a de destino final.</b> POA → PTY → IST cobra Central/Sul América ↔ Europa = 80.000 RT, logo <b>40.000 OW</b>. A região do ponto de conexão não entra no preço.</li>
+        <li><b>Europa ↔ Europa não tem Primeira (F)</b> na tabela; Havaí aparece sem preços publicados.</li>
+        <li>Itinerários com 2 conexões são mostrados para referência; confirme no site da Aegean se o roteiro é aceito antes de transferir milhas.</li>
+      </ul>
+      <div style="display:grid;gap:6px">
+        <span class="note"><b>Regiões dos aeroportos</b></span>
+        <div class="legend" id="reglegend"></div>
+      </div>
+    </section>
+  </div>
+
+
+  <section class="card" aria-labelledby="cth">
+    <div class="cardhead"><h2 id="cth">Países, regiões e aeroportos</h2>
+      <div class="ctrls"><input id="cq" placeholder="Buscar país ou sigla" style="width:220px;text-transform:none" aria-label="Buscar país ou sigla">
+      <select id="cr" style="width:auto" aria-label="Filtrar região"><option value="">Todas as regiões</option></select></div></div>
+    <p class="note">Passe o mouse sobre um país no mapa para ver a região e o preço a partir da sua origem. Pontos brancos são aeroportos fora da rede de exemplo: o preço vale do mesmo jeito, pela região.</p>
+    <div class="tscroll" style="max-height:420px;overflow:auto"><table class="ctab" id="ctab"></table></div>
+  </section>
+
+  <footer>A rede de rotas é um exemplo montado a partir de voos conhecidos de Aegean e parceiros Star Alliance (Copa, Turkish, Lufthansa, SWISS, TAP, United, Avianca, Ethiopian e outros). Voos sazonais e mudanças de malha acontecem: confira sempre a disponibilidade de assento-prêmio no site da Aegean. A classificação de alguns países em regiões (Egito, Geórgia, Armênia, México) pode variar; confirme na regra oficial.</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script>
+const WORLD = /*WORLD*/null;
+const COUNTRIES = /*COUNTRIES*/[];
+
+// ---------- Regiões e tabela (RT, em milhar) ----------
+const REG = [
+  {k:'EU', n:'Europa & Norte da África', c:'#6fa8ff'},
+  {k:'ME', n:'Oriente Médio', c:'#ffb36b'},
+  {k:'AF', n:'África Central & Sul', c:'#e7d36b'},
+  {k:'NC', n:'Oriente Próximo & Ásia Central', c:'#ff7fa8'},
+  {k:'FE', n:'Extremo Oriente', c:'#ff6b6b'},
+  {k:'OC', n:'Oceania', c:'#5fe0d0'},
+  {k:'NA', n:'América do Norte', c:'#b48cff'},
+  {k:'SA', n:'América Central & Sul', c:'#7ee07a'},
+  {k:'HI', n:'Havaí', c:'#c9d4de'},
+];
+const RI = Object.fromEntries(REG.map((r,i)=>[r.k,i]));
+const RAW = {
+  EU:{EU:[30,50,null],ME:[40,60,90],AF:[80,110,150],NC:[70,110,150],FE:[90,130,180],OC:[100,150,200],NA:[70,110,150],SA:[80,110,150]},
+  ME:{ME:[25,42,80],AF:[40,60,90],NC:[40,60,90],FE:[60,90,120],OC:[80,110,150],NA:[80,110,150],SA:[80,110,150]},
+  AF:{AF:[25,42,80],NC:[60,90,120],FE:[80,110,150],OC:[80,110,150],NA:[80,110,150],SA:[60,90,120]},
+  NC:{NC:[25,42,80],FE:[60,90,120],OC:[80,110,150],NA:[100,150,200],SA:[100,150,200]},
+  FE:{FE:[35,65,90],OC:[80,110,150],NA:[100,150,200],SA:[100,150,200]},
+  OC:{OC:[25,42,80],NA:[100,150,200],SA:[100,150,200]},
+  NA:{NA:[25,42,80],SA:[60,90,120]},
+  SA:{SA:[25,42,80]},
+  HI:{}
+};
+function rt(a,b){ // retorna [Y,C,F] RT em milhas ou null; flag mirror
+  if(RAW[a] && RAW[a][b]) return {v:RAW[a][b].map(x=>x==null?null:x*1000),mir:false};
+  if(RAW[b] && RAW[b][a]) return {v:RAW[b][a].map(x=>x==null?null:x*1000),mir:true};
+  return null;
+}
+
+// ---------- Aeroportos ----------
+const AP = {}; const CBY={};
+for(const c of COUNTRIES){CBY[c.en]=c; for(const [code,city,lat,lon] of c.ap) AP[code]={c:code,n:city,lat,lon,r:c.r,country:c.pt}}
+
+// ---------- Rotas ----------
+const AL = {A3:'Aegean',OA:'Olympic (Aegean)',CM:'Copa',AV:'Avianca',TK:'Turkish',LH:'Lufthansa',LX:'SWISS',OS:'Austrian',SN:'Brussels',
+  TP:'TAP',UA:'United',AC:'Air Canada',ET:'Ethiopian',MS:'EgyptAir',SA:'South African',LO:'LOT',SK:'SAS',NH:'ANA',SQ:'Singapore',
+  NZ:'Air New Zealand',CA:'Air China',OZ:'Asiana',TG:'Thai',AI:'Air India',BR:'EVA Air',A3x:'Aegean'};
+const RAWR = {
+ A3:{ATH:'SKG HER RHO CFU JTR JMK CHQ LCA IST LHR CDG FRA MUC ZRH VIE FCO MXP BCN MAD LIS AMS BRU CPH ARN BER WAW BUD OTP SOF BEG TIA TBS EVN CAI TUN CMN TLV BEY AMM RUH JED KWI EBL',
+     SKG:'LHR CDG FRA MUC LCA HER RHO VIE ZRH', LCA:'HER RHO SKG BEY TLV AMM', HER:'LHR MUC'},
+ CM:{PTY:'POA GRU GIG FLN BSB CNF EZE MVD SCL LIM BOG SJO JFK MIA ORD LAX SFO YYZ IAD'},
+ AV:{BOG:'GRU EZE SCL LIM SJO MIA JFK MAD BCN LHR'},
+ TK:{IST:'GRU EZE BOG PTY JFK EWR ORD IAD LAX SFO MIA IAH YYZ YUL ATH SKG LHR CDG FRA MUC ZRH VIE FCO MXP BCN MAD LIS AMS BRU CPH ARN BER WAW BUD OTP SOF BEG TIA TBS EVN CAI CMN TUN ALG BEY AMM RUH JED KWI DXB DOH BAH EBL ADD JNB CPT NBO LOS ACC LAD DEL BOM TAS ALA CMB KTM PEK PVG HKG NRT HND ICN TPE BKK SIN KUL MNL SYD MEL'},
+ LH:{FRA:'GRU EZE BOG JFK EWR ORD IAH LAX SFO MIA IAD YYZ YUL PEK PVG HND ICN SIN BKK DEL BOM JNB CPT TLV AMM BEY CAI RUH ATH SKG HER LHR CDG MAD LIS BCN FCO', MUC:'JFK EWR ORD LAX SFO PVG PEK ICN HND SIN BKK DEL BOM ATH LHR CDG MAD LIS'},
+ LX:{ZRH:'GRU JFK EWR ORD MIA SFO LAX YUL BKK SIN HKG NRT PVG DEL BOM JNB TLV ATH LHR CDG LIS'},
+ OS:{VIE:'JFK IAD ORD YYZ BKK TLV AMM BEY TBS EVN NRT DEL ATH LHR CDG'},
+ SN:{BRU:'JFK IAD TLV ACC LOS ATH'},
+ TP:{LIS:'GRU GIG BSB CNF JFK EWR MIA YYZ IAD SFO ACC LAD CMN ATH LHR CDG FRA MUC ZRH MAD BCN FCO'},
+ UA:{EWR:'GRU GIG EZE BOG LIM ATH TLV LHR FRA LIS ZRH', IAH:'GRU EZE BOG PTY LIM SCL SYD NRT FRA', SFO:'SYD MEL AKL HNL NRT ICN SIN PVG HKG FRA MUC', LAX:'HNL SYD', ORD:'HNL'},
+ AC:{YYZ:'GRU BOG LHR FRA ATH DEL HND', YUL:'ATH'},
+ ET:{ADD:'GRU JNB CPT NBO LOS ACC LAD DXB RUH JED TLV DEL BOM BKK PEK PVG HKG NRT ICN FRA LHR CDG ATH IAD EWR ORD YYZ'},
+ MS:{CAI:'ATH JFK YYZ LHR FRA JNB NBO ADD LOS ACC RUH JED KWI BEY AMM DEL BOM PEK'},
+ SA:{JNB:'GRU CPT LOS ACC PER'},
+ LO:{WAW:'JFK ORD EWR YYZ TLV ICN HND TAS DEL'},
+ SK:{CPH:'JFK EWR ORD LAX SFO MIA PVG HND', ARN:'JFK EWR'},
+ NH:{HND:'JFK ORD IAH LAX SFO HNL FRA MUC LHR SIN BKK SYD DEL', NRT:'IAH YYZ'},
+ SQ:{SIN:'SYD MEL PER AKL JFK EWR LAX SFO FRA MUC ZRH LHR CDG IST DEL BOM CMB KTM JNB BKK HKG ICN NRT PVG PEK MNL KUL TPE'},
+ NZ:{AKL:'SYD MEL PER LAX SFO IAH JFK HNL NRT SIN'},
+ CA:{PEK:'FRA ATH LHR CDG MAD JFK LAX SFO IAH SYD MEL SIN BKK NRT ICN'},
+ OZ:{ICN:'JFK LAX SFO SYD FRA IST BKK SIN'},
+ TG:{BKK:'FRA MUC ZRH LHR CPH SYD MEL NRT HND ICN SIN DEL BOM KTM CMB'},
+ AI:{DEL:'LHR FRA CDG JFK EWR ORD SFO YYZ SYD MEL NRT SIN BKK', BOM:'LHR JFK SFO'},
+ BR:{TPE:'JFK LAX SFO IAH YYZ ORD LHR CDG VIE BKK SIN HKG NRT ICN MNL KUL'},
+};
+const EDGES=new Map(); // "AAA-BBB" (ordenado) -> {a,b,al:Set,a3:bool,km}
+for(const [al,hubs] of Object.entries(RAWR)) for(const [h,list] of Object.entries(hubs)) for(const d of list.split(/\s+/)){
+  if(!AP[h]||!AP[d]||h===d) continue;
+  const [a,b]=[h,d].sort(); const key=a+'-'+b;
+  let e=EDGES.get(key); if(!e){e={a,b,al:new Set(),a3:false,km:hav(AP[a],AP[b])};EDGES.set(key,e)}
+  e.al.add(al); if(al==='A3') e.a3=true;
+}
+function hav(p,q){const R=6371,t=Math.PI/180,dl=(q.lat-p.lat)*t,dn=(q.lon-p.lon)*t;const x=Math.sin(dl/2)**2+Math.cos(p.lat*t)*Math.cos(q.lat*t)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
+const ADJ={}; for(const c in AP) ADJ[c]=[];
+for(const e of EDGES.values()){ADJ[e.a].push(e);ADJ[e.b].push(e)}
+const other=(e,c)=>e.a===c?e.b:e.a;
+
+// ---------- Estado ----------
+const S={org:'POA',dst:'IST',ow:true,stops:1,cab:0,tOW:true,showA3:true,showST:true,anim:true,pair:null,paths:[],selPath:0};
+try{const s=JSON.parse(localStorage.getItem('aegeanRadar')||'{}');if(AP[s.org])S.org=s.org;if(AP[s.dst])S.dst=s.dst;}catch(e){}
+function save(){try{localStorage.setItem('aegeanRadar',JSON.stringify({org:S.org,dst:S.dst}))}catch(e){}}
+const edgeOn=e=>(e.a3&&S.showA3)||([...e.al].some(a=>a!=='A3')&&S.showST);
+const fmt=n=>n==null?'—':n.toLocaleString('pt-BR');
+
+// ---------- Busca de itinerários ----------
+function findPaths(o,d,maxStops){
+  const out=[]; const direct=hav(AP[o],AP[d]);
+  function dfs(cur,path,segs,km){
+    if(cur===d){out.push({nodes:[...path],segs:[...segs],km});return}
+    if(path.length>maxStops+1) return;
+    for(const e of ADJ[cur]){ if(!edgeOn(e)) continue; const n=other(e,cur); if(path.includes(n)) continue;
+      if(path.length===maxStops+1 && n!==d) continue;
+      const nk=km+e.km; if(nk>direct*2.1+800) continue;
+      path.push(n);segs.push(e);dfs(n,path,segs,nk);path.pop();segs.pop(); }
+  }
+  dfs(o,[o],[],0);
+  out.forEach(p=>{p.a3=p.segs.filter(s=>s.a3).length; p.score=p.km*(1+0.12*(p.nodes.length-2))});
+  out.sort((x,y)=>x.score-y.score);
+  return out.slice(0,25);
+}
+function priceFor(o,d){ return rt(AP[o].r,AP[d].r) }
+
+// ---------- UI planner ----------
+const $=id=>document.getElementById(id);
+$('aplist').innerHTML=Object.values(AP).map(a=>`<option value="${a.c}">${a.n}, ${a.country} · ${REG[RI[a.r]].n}</option>`).join('');
+function setPressed(a,b,on){a.setAttribute('aria-pressed',on);b.setAttribute('aria-pressed',!on)}
+$('tOW').onclick=()=>{S.ow=true;setPressed($('tOW'),$('tRT'),true);updatePlan(false)};
+$('tRT').onclick=()=>{S.ow=false;setPressed($('tOW'),$('tRT'),false);updatePlan(false)};
+$('stops').onchange=e=>{S.stops=+e.target.value;updatePlan(true)};
+$('swap').onclick=()=>{[S.org,S.dst]=[S.dst,S.org];syncInputs();updatePlan(true);renderSpots();renderCountries()};
+['org','dst'].forEach(id=>$(id).addEventListener('input',e=>{const v=e.target.value.toUpperCase().trim();if(AP[v]){S[id]=v;updatePlan(true);if(id==='org'){renderSpots();renderCountries()}}}));
+function syncInputs(){$('org').value=S.org;$('dst').value=S.dst}
+
+function updatePlan(recompute){
+  save();
+  const o=AP[S.org],d=AP[S.dst];
+  $('hudSel').innerHTML=`Origem <b>${S.org}</b> · Destino <b>${S.dst}</b>`;
+  const ro=REG[RI[o.r]],rd=REG[RI[d.r]];
+  $('pairlbl').innerHTML=`<span class="rdot" style="background:${ro.c}"></span><b>${ro.n}</b> ↔ <span class="rdot" style="background:${rd.c}"></span><b>${rd.n}</b> · ${S.ow?'só ida':'ida e volta'}`;
+  const p=priceFor(S.org,S.dst); const div=S.ow?2:1;
+  const names=['Y Econômica','C Executiva','F Primeira'];
+  $('price').innerHTML=names.map((n,i)=>{const v=p&&p.v[i]!=null?p.v[i]/div:null;return `<div class="pbox${i===S.cab?' on':''}"><div class="k">${n}</div><div class="v">${v==null?'—':fmt(v)}</div></div>`}).join('');
+  $('pricenote').innerHTML = !p ? 'Sem preço publicado para este par de regiões (Havaí).' :
+    (S.org===S.dst?'Origem e destino iguais.':`Preço pela região de origem e destino final; a conexão não muda o valor.${S.ow?' Só ida = 50% da tabela.':''}`);
+  if(recompute){S.paths=S.org===S.dst?[]:findPaths(S.org,S.dst,S.stops);S.selPath=0}
+  renderResults();
+  draw();
+}
+function renderResults(){
+  const box=$('results');
+  if(!S.paths.length){box.innerHTML=`<p class="empty">Nenhum itinerário com as camadas e conexões escolhidas. Tente permitir mais conexões ou ligar as duas camadas.</p>`;return}
+  const p=priceFor(S.org,S.dst),div=S.ow?2:1, y=p&&p.v[0]!=null?p.v[0]/div:null;
+  box.innerHTML=S.paths.map((pt,i)=>{
+    const path=pt.nodes.map((n,j)=>{let s=`<span>${n}</span>`;if(j<pt.segs.length){const e=pt.segs[j];const als=[...e.al];s+=` <span class="arrow">→</span> `+als.slice(0,3).map(a=>`<span class="al ${a==='A3'?'a3':'st'}" title="${AL[a]}">${a}</span>`).join(' ')+(als.length>3?`<span class="al st">+${als.length-3}</span>`:'')+` <span class="arrow">→</span>`}return s}).join(' ');
+    const stops=pt.nodes.length-2;
+    return `<button class="res${i===S.selPath?' sel':''}" data-i="${i}"><div class="path">${path}</div><div class="meta"><span>${stops===0?'Direto':stops+' conexão'+(stops>1?'ões':'')}</span><span class="mono">${fmt(Math.round(pt.km))} km</span>${y?`<span class="mono">${fmt(y)} mi Y</span><span class="mono">${Math.round(pt.km/(y/1000))} km/1k mi</span>`:''}${pt.a3?`<span style="color:var(--a3)">${pt.a3} trecho(s) Aegean</span>`:''}${stops>1?'<span style="color:var(--warn)">confirmar regra</span>':''}</div></button>`}).join('');
+  box.querySelectorAll('.res').forEach(b=>b.onclick=()=>{S.selPath=+b.dataset.i;renderResults();draw()});
+}
+
+// ---------- Tabela ----------
+function renderChart(){
+  const T=$('chart'); const R=REG; const div=S.tOW?2:1;
+  let all=[];for(const a of R)for(const b of R){const p=rt(a.k,b.k);if(p&&p.v[S.cab]!=null)all.push(p.v[S.cab]/div)}
+  const mn=Math.min(...all),mx=Math.max(...all);
+  const col=d3.scaleSequential([mn,mx],t=>d3.interpolateRgbBasis(['#7ee0b8','#e8d76b','#ff8f6b'])(t));
+  let h='<thead><tr><th></th>'+R.map(r=>`<th scope="col"><span class="dot" style="background:${r.c}"></span><br>${r.n}</th>`).join('')+'</tr></thead><tbody>';
+  for(const a of R){h+=`<tr><th class="rh" scope="row"><span class="dot" style="background:${a.c}"></span>${a.n}</th>`;
+    for(const b of R){const p=rt(a.k,b.k);const v=p&&p.v[S.cab]!=null?p.v[S.cab]/div:null;
+      const sel=S.pair&&((S.pair[0]===a.k&&S.pair[1]===b.k)||(S.pair[0]===b.k&&S.pair[1]===a.k));
+      h+=v==null?`<td class="na">—</td>`:`<td class="${p.mir?'mir':''}${sel?' sel':''}" data-a="${a.k}" data-b="${b.k}" style="background:${col(v)}" title="${a.n} ↔ ${b.n}">${fmt(v)}</td>`}
+    h+='</tr>'}
+  T.innerHTML=h+'</tbody>';
+  T.querySelectorAll('td[data-a]').forEach(td=>td.onclick=()=>{const k=[td.dataset.a,td.dataset.b];S.pair=S.pair&&S.pair[0]===k[0]&&S.pair[1]===k[1]?null:k;renderChart();draw();$('mapbox').scrollIntoView({behavior:'smooth',block:'center'})});
+}
+document.querySelectorAll('[data-cab]').forEach(b=>b.onclick=()=>{S.cab=+b.dataset.cab;document.querySelectorAll('[data-cab]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderChart();updatePlan(false)});
+$('ttOW').onclick=()=>{S.tOW=true;setPressed($('ttOW'),$('ttRT'),true);renderChart()};
+$('ttRT').onclick=()=>{S.tOW=false;setPressed($('ttOW'),$('ttRT'),false);renderChart()};
+
+// ---------- Melhores rotas ----------
+function renderSpots(){
+  $('spOrg').textContent=S.org;
+  const best={};
+  for(const c in AP){ if(c===S.org) continue; const ps=findPaths(S.org,c,1); if(!ps.length) continue;
+    const p=priceFor(S.org,c); if(!p||p.v[0]==null) continue; const y=p.v[0]/2;
+    const km=ps[0].km; best[c]={c,km,y,eff:km/(y/1000),via:ps[0].nodes.length>2?ps[0].nodes[1]:null}; }
+  const list=Object.values(best).sort((a,b)=>b.eff-a.eff).slice(0,14);
+  $('spots').innerHTML=list.length?list.map(s=>{const a=AP[s.c];return `<button class="spot" data-c="${s.c}"><span class="c" style="color:${REG[RI[a.r]].c}">${s.c}</span><span class="r">${a.n}${s.via?' · via '+s.via:' · direto'}</span><span class="m">${fmt(s.y)}</span><span class="e">${fmt(Math.round(s.eff))} km</span></button>`}).join(''):'<p class="empty">Sem destinos com as camadas ativas.</p>';
+  $('spots').querySelectorAll('.spot').forEach(b=>b.onclick=()=>{S.dst=b.dataset.c;syncInputs();updatePlan(true);$('mapbox').scrollIntoView({behavior:'smooth',block:'center'})});
+}
+function renderNet(){
+  const a3=[...EDGES.values()].filter(e=>e.a3);
+  const dests=new Set();a3.forEach(e=>{dests.add(e.a);dests.add(e.b)});dests.delete('ATH');
+  $('netcount').textContent=`${a3.length} trechos · ${dests.size} cidades`;
+  $('netlist').innerHTML=[...dests].sort((x,y)=>AP[x].r.localeCompare(AP[y].r)||x.localeCompare(y)).map(c=>`<button data-c="${c}"><span class="c">${c}</span><span class="n">${AP[c].n}</span></button>`).join('');
+  $('netlist').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.dst=b.dataset.c;syncInputs();updatePlan(true);$('mapbox').scrollIntoView({behavior:'smooth',block:'center'})});
+  $('reglegend').innerHTML=REG.map(r=>`<span class="chip" style="cursor:default"><span class="rdot" style="background:${r.c};margin:0"></span>${r.n}</span>`).join('');
+}
+
+// ---------- Mapa (canvas) ----------
+const cv=$('map'),ctx=cv.getContext('2d');let W=0,H=0,DPR=1;
+const proj=d3.geoNaturalEarth1();const gpath=d3.geoPath(proj,ctx);
+const countries=WORLD?topojson.feature(WORLD,WORLD.objects.countries).features:[];
+countries.forEach(f=>{const c=CBY[f.properties.name];f.reg=c?c.r:null;f.pt=c?c.pt:f.properties.name});
+const borders=WORLD?topojson.mesh(WORLD,WORLD.objects.countries,(a,b)=>a!==b):null;
+const grat=d3.geoGraticule10();
+let T=d3.zoomIdentity; let hoverC=null;
+function resize(){const r=cv.getBoundingClientRect();DPR=Math.min(2,window.devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*DPR;cv.height=H*DPR;
+  proj.fitExtent([[8,8],[W-8,H-8]],{type:'Sphere'});draw()}
+const zoom=d3.zoom().scaleExtent([1,14]).on('zoom',ev=>{T=ev.transform;draw()});
+d3.select(cv).call(zoom).on('dblclick.zoom',null);
+$('zin').onclick=()=>d3.select(cv).transition().duration(300).call(zoom.scaleBy,1.6);
+$('zout').onclick=()=>d3.select(cv).transition().duration(300).call(zoom.scaleBy,1/1.6);
+$('zreset').onclick=()=>d3.select(cv).transition().duration(400).call(zoom.transform,d3.zoomIdentity);
+const line=(a,b)=>({type:'LineString',coordinates:[[AP[a].lon,AP[a].lat],[AP[b].lon,AP[b].lat]]});
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C={};function cols(){['--a3','--star','--hl','--land','--landedge','--bg','--fg','--muted','--line'].forEach(k=>C[k]=css(k))}
+
+function activeSets(){
+  const sel=S.paths[S.selPath]; const pathSet=new Set(sel?sel.segs:[]);
+  const focus=new Set([S.org]); return {pathSet,focus,sel};
+}
+let planes=[];
+function seedPlanes(){planes=[];const es=[...EDGES.values()];for(let i=0;i<70;i++){const e=es[Math.floor(Math.random()*es.length)];planes.push({e,t:Math.random(),dir:Math.random()<.5,sp:.0006+Math.random()*.0012})}}
+seedPlanes();
+
+function draw(){
+  if(!W) return;
+  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);
+  ctx.fillStyle=C['--bg'];ctx.fillRect(0,0,W,H);
+  ctx.setTransform(DPR*T.k,0,0,DPR*T.k,DPR*T.x,DPR*T.y);
+  const k=T.k;
+  ctx.beginPath();gpath({type:'Sphere'});ctx.fillStyle='#0a1722';ctx.fill();
+  ctx.beginPath();gpath(grat);ctx.strokeStyle='rgba(120,160,200,.07)';ctx.lineWidth=.6/k;ctx.stroke();
+  for(const f of countries){ if(!f.reg){ctx.beginPath();gpath(f);ctx.fillStyle=C['--land'];ctx.fill();continue}
+    const col=d3.color(REG[RI[f.reg]].c); const dim=S.pair&&!(f.reg===S.pair[0]||f.reg===S.pair[1]);
+    const isO=f.reg===AP[S.org].r, isD=f.reg===AP[S.dst].r;
+    col.opacity=dim?.06:(f===hoverC?.55:(isO||isD?.34:.22));
+    ctx.beginPath();gpath(f);ctx.fillStyle=col+'';ctx.fill() }
+  if(borders){ctx.beginPath();gpath(borders);ctx.strokeStyle='rgba(8,18,28,.75)';ctx.lineWidth=.7/k;ctx.stroke()}
+  if(hoverC){ctx.beginPath();gpath(hoverC);ctx.strokeStyle='rgba(255,255,255,.7)';ctx.lineWidth=1.2/k;ctx.stroke()}
+  const {pathSet,sel}=activeSets();
+  const pairOn=S.pair; const inPair=e=>pairOn&&((AP[e.a].r===pairOn[0]&&AP[e.b].r===pairOn[1])||(AP[e.a].r===pairOn[1]&&AP[e.b].r===pairOn[0]));
+  const touchesOrg=e=>e.a===S.org||e.b===S.org;
+  // base routes
+  for(const e of EDGES.values()){
+    if(!edgeOn(e)) continue;
+    const isA3=e.a3&&S.showA3;
+    let alpha = pairOn? (inPair(e)?.75:.04) : (touchesOrg(e)?.55:(isA3?.32:.12));
+    if(sel) alpha*=.55;
+    ctx.beginPath();gpath(line(e.a,e.b));
+    ctx.strokeStyle=isA3?`rgba(79,179,255,${alpha})`:`rgba(240,181,74,${alpha})`;
+    ctx.lineWidth=(isA3?1.1:.8)/k;ctx.stroke();
+  }
+  // selected path
+  if(sel){for(const e of sel.segs){ctx.beginPath();gpath(line(e.a,e.b));ctx.strokeStyle='rgba(124,242,196,.25)';ctx.lineWidth=7/k;ctx.stroke();ctx.beginPath();gpath(line(e.a,e.b));ctx.strokeStyle=e.a3?C['--a3']:C['--hl'];ctx.lineWidth=2.4/k;ctx.setLineDash(e.a3?[]:[6/k,4/k]);ctx.stroke();ctx.setLineDash([])}}
+  // planes
+  if(S.anim){for(const p of planes){const e=p.e;if(!edgeOn(e))continue;const A=AP[p.dir?e.a:e.b],B=AP[p.dir?e.b:e.a];
+      const it=d3.geoInterpolate([A.lon,A.lat],[B.lon,B.lat]);const q=proj(it(p.t)),q2=proj(it(Math.min(1,p.t+.01)));if(!q||!q2)continue;
+      const ang=Math.atan2(q2[1]-q[1],q2[0]-q[0]);if(Math.abs(q2[0]-q[0])>W/3)continue;
+      ctx.save();ctx.translate(q[0],q[1]);ctx.rotate(ang);ctx.scale(1/k,1/k);
+      ctx.fillStyle=e.a3&&S.showA3?C['--a3']:C['--star'];
+      ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(-4,-3.6);ctx.lineTo(-2,0);ctx.lineTo(-4,3.6);ctx.closePath();ctx.fill();ctx.restore()}}
+  // airports
+  const pathNodes=new Set(sel?sel.nodes:[]);
+  const visible=new Set();for(const e of EDGES.values())if(edgeOn(e)){visible.add(e.a);visible.add(e.b)}
+  for(const a of Object.values(AP)){
+    const p=proj([a.lon,a.lat]);if(!p)continue;const reg=REG[RI[a.r]];
+    const dimmed=pairOn&&!(a.r===pairOn[0]||a.r===pairOn[1]);
+    const isEnd=a.c===S.org||a.c===S.dst, inP=pathNodes.has(a.c);
+    const r=(isEnd?5.5:inP?4.2:a.c==='ATH'?4:visible.has(a.c)?2.6:1.9)/k;
+    ctx.globalAlpha=dimmed?.15:(visible.has(a.c)?1:.7);
+    if(isEnd){ctx.beginPath();ctx.arc(p[0],p[1],r*2.1,0,7);ctx.strokeStyle=C['--hl'];ctx.lineWidth=1.4/k;ctx.stroke()}
+    ctx.beginPath();ctx.arc(p[0],p[1],r,0,7);ctx.fillStyle=visible.has(a.c)?reg.c:'#dfe8f0';ctx.fill();ctx.strokeStyle='#08121c';ctx.lineWidth=1/k;ctx.stroke();
+    if(isEnd||inP||k>3.2||a.c==='ATH'||(pairOn&&!dimmed&&k>1.6)){ctx.font=`${(isEnd||inP?600:500)} ${11/k}px "IBM Plex Mono", monospace`;ctx.fillStyle=isEnd||inP?'#ffffff':C['--muted'];ctx.fillText(a.c,p[0]+r+3/k,p[1]-r)}
+    ctx.globalAlpha=1;
+  }
+}
+let last=0;function tick(ts){if(S.anim&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const dt=Math.min(50,ts-last||16);for(const p of planes){p.t+=p.sp*dt/16*(1500/Math.max(800,p.e.km))*2;if(p.t>1){p.t=0;const es=[...EDGES.values()];p.e=es[Math.floor(Math.random()*es.length)];p.dir=Math.random()<.5}}draw()}last=ts;requestAnimationFrame(tick)}
+
+// hit test
+function nearest(mx,my){let best=null,bd=1e9;for(const a of Object.values(AP)){const p=proj([a.lon,a.lat]);if(!p)continue;const x=p[0]*T.k+T.x,y=p[1]*T.k+T.y;const d=Math.hypot(x-mx,y-my);if(d<bd){bd=d;best=a}}return bd<12?best:null}
+let pickNext='dst';
+cv.addEventListener('mousemove',ev=>{const r=cv.getBoundingClientRect();const mx=ev.clientX-r.left,my=ev.clientY-r.top;const a=nearest(mx,my);const tip=$('tip');
+  const ll=proj.invert([(mx-T.x)/T.k,(my-T.y)/T.k]);const f=ll?countries.find(f=>d3.geoContains(f,ll)):null;
+  if(f!==hoverC){hoverC=f;if(!S.anim)draw()}
+  let html='';
+  if(a){const n=ADJ[a.c].filter(edgeOn);const a3=n.filter(e=>e.a3).length;const p=priceFor(S.org,a.c);const y=p&&p.v[0]!=null?p.v[0]/2:null;
+    html=`<b>${a.c}</b> ${a.n} · ${a.country}<br><span style="color:${REG[RI[a.r]].c}">${REG[RI[a.r]].n}</span><br>${n.length?n.length+' rotas na rede':'sem rota na rede de exemplo'}${a3?` · <span style="color:var(--a3)">${a3} Aegean</span>`:''}${y&&a.c!==S.org?`<br>De ${S.org}: <b>${fmt(y)}</b> mi Y só ida`:''}`}
+  else if(f&&f.reg){const c=CBY[f.properties.name];const p=rt(AP[S.org].r,f.reg);const v=p?p.v.map(x=>x==null?'—':fmt(x/2)):null;
+    html=`<b>${f.pt}</b><br><span style="color:${REG[RI[f.reg]].c}">${REG[RI[f.reg]].n}</span>${c&&c.ap.length?`<br><span class="mono">${c.ap.map(x=>x[0]).join(' · ')}</span>`:''}${v?`<br>De ${S.org} (OW): Y <b>${v[0]}</b> · C <b>${v[1]}</b> · F <b>${v[2]}</b>`:'<br>Sem preço publicado'}`}
+  if(!html){tip.hidden=true;return}
+  tip.innerHTML=html;tip.hidden=false;let x=mx+14,yy=my+14;if(x>W-250)x-=264;if(yy>H-90)yy-=100;tip.style.left=x+'px';tip.style.top=yy+'px'});
+cv.addEventListener('mouseleave',()=>{$('tip').hidden=true;hoverC=null;draw()});
+cv.addEventListener('click',ev=>{const r=cv.getBoundingClientRect();const a=nearest(ev.clientX-r.left,ev.clientY-r.top);if(!a)return;
+  if(pickNext==='org'){S.org=a.c;pickNext='dst';renderSpots();renderCountries()}else{if(a.c===S.org)return;S.dst=a.c;pickNext='org'}
+  syncInputs();updatePlan(true)});
+
+// camadas
+function toggle(btn,key,after){btn.onclick=()=>{S[key]=!S[key];btn.setAttribute('aria-pressed',S[key]);after&&after()}}
+toggle($('lyA3'),'showA3',()=>{updatePlan(true);renderSpots()});
+toggle($('lyST'),'showST',()=>{updatePlan(true);renderSpots()});
+toggle($('lyAnim'),'anim',()=>draw());
+$('hudCount').textContent=`${COUNTRIES.filter(c=>c.r).length} países · ${Object.keys(AP).length} aeroportos · ${EDGES.size} rotas · clique: origem/destino`;
+
+
+function renderCountries(){
+  const q=($('cq').value||'').trim().toLowerCase(), rf=$('cr').value;
+  const rows=COUNTRIES.filter(c=>c.r&&(!rf||c.r===rf)&&(!q||c.pt.toLowerCase().includes(q)||c.en.toLowerCase().includes(q)||c.ap.some(a=>a[0].toLowerCase()===q||a[1].toLowerCase().includes(q))))
+    .sort((a,b)=>RI[a.r]-RI[b.r]||a.pt.localeCompare(b.pt,'pt'));
+  const op=AP[S.org].r;
+  $('ctab').innerHTML='<thead><tr><th>País</th><th>Região</th><th>Aeroportos</th><th>De '+S.org+' (Y OW)</th></tr></thead><tbody>'+rows.map(c=>{const p=rt(op,c.r);const reg=REG[RI[c.r]];
+    return `<tr><td>${c.pt}</td><td><span class="rdot" style="background:${reg.c}"></span>${reg.n}</td><td class="codes">${c.ap.map(a=>`<button data-c="${a[0]}" title="${a[1]}">${a[0]}</button>`).join('')||'—'}</td><td class="mono">${p&&p.v[0]!=null?fmt(p.v[0]/2):'—'}</td></tr>`}).join('')+'</tbody>';
+  $('ctab').querySelectorAll('button[data-c]').forEach(b=>b.onclick=()=>{S.dst=b.dataset.c;syncInputs();updatePlan(true);$('mapbox').scrollIntoView({behavior:'smooth',block:'center'})});
+}
+$('cr').innerHTML+=REG.map(r=>`<option value="${r.k}">${r.n}</option>`).join('');
+$('cq').addEventListener('input',renderCountries);$('cr').addEventListener('change',renderCountries);
+cols();syncInputs();renderCountries();renderChart();renderNet();renderSpots();
+new ResizeObserver(resize).observe($('mapbox'));
+updatePlan(true);requestAnimationFrame(tick);
+</script>
