@@ -38,6 +38,15 @@ canvas#map:active{cursor:grabbing}
 .hud .tag b{color:var(--fg);font-weight:500}
 .zoombtns{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:4px}
 .zoombtns button{width:32px;height:32px;border-radius:6px;border:1px solid var(--line);background:rgba(8,18,28,.85);color:var(--fg);font-size:16px;cursor:pointer}
+
+.basebar{position:absolute;left:10px;bottom:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;background:rgba(8,18,28,.86);border:1px solid var(--line);border-radius:8px;padding:8px;max-width:calc(100% - 20px)}
+.basebar label{font-size:10.5px}
+.basebar select{padding:5px 8px;font-size:12.5px;width:auto}
+.basebar .seg button{padding:6px 9px;font-size:11.5px}
+.scale{position:absolute;right:10px;bottom:10px;background:rgba(8,18,28,.86);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-family:var(--f-mono);font-size:11px;color:var(--muted);display:grid;gap:4px;min-width:170px}
+.scale .bar{height:8px;border-radius:4px}
+.scale .ends{display:flex;justify-content:space-between}
+@media (max-width:900px){.scale{display:none}.hud .tag:nth-child(2){display:none}}
 #tip{position:absolute;pointer-events:none;background:rgba(8,18,28,.94);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:12px;max-width:240px}
 #tip b{font-family:var(--f-mono)}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:14px;align-content:start;min-width:0}
@@ -109,7 +118,7 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
   <header>
     <div>
       <h1>Radar <span>Aegean</span> Miles+Bonus</h1>
-      <p class="sub">Rotas da Aegean (A3) separadas dos parceiros Star Alliance, com o preço do resgate calculado pela tabela de regiões. Cada país aparece na cor da sua região de preço. Clique em um aeroporto para escolher a origem e, depois, o destino.</p>
+      <p class="sub">Rotas da Aegean (A3) separadas dos parceiros Star Alliance, com o preço do resgate calculado pela tabela de regiões. Escolha a região base e cada país muda de cor conforme o preço até ele; as etiquetas mostram o valor de cada região. Clique em um aeroporto para escolher a origem e, depois, o destino.</p>
     </div>
     <div class="legend" role="group" aria-label="Camadas do mapa">
       <button class="chip" id="lyA3" aria-pressed="true"><span class="sw" style="background:var(--a3)"></span>Voos Aegean (A3)</button>
@@ -125,6 +134,12 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
         <div class="tag" id="hudSel">Origem <b>—</b> · Destino <b>—</b></div>
         <div class="tag" id="hudCount"></div>
       </div>
+      <div class="basebar">
+        <label for="baseSel">Região base<select id="baseSel"></select></label>
+        <label for="cabSel">Classe<select id="cabSel"><option value="0">Y Econômica</option><option value="1">C Executiva</option><option value="2">F Primeira</option></select></label>
+        <div class="seg" role="group" aria-label="Cor do mapa"><button id="mPrice" aria-pressed="true">Cor por preço</button><button id="mReg" aria-pressed="false">Cor por região</button></div>
+      </div>
+      <div class="scale" id="scale"></div>
       <div class="zoombtns">
         <button id="zin" aria-label="Aproximar">+</button>
         <button id="zout" aria-label="Afastar">−</button>
@@ -305,11 +320,19 @@ for(const e of EDGES.values()){ADJ[e.a].push(e);ADJ[e.b].push(e)}
 const other=(e,c)=>e.a===c?e.b:e.a;
 
 // ---------- Estado ----------
-const S={org:'POA',dst:'IST',ow:true,stops:1,cab:0,tOW:true,showA3:true,showST:true,anim:true,pair:null,paths:[],selPath:0};
+const S={base:null,priceMode:true,org:'POA',dst:'IST',ow:true,stops:1,cab:0,tOW:true,showA3:true,showST:true,anim:true,pair:null,paths:[],selPath:0};
 try{const s=JSON.parse(localStorage.getItem('aegeanRadar')||'{}');if(AP[s.org])S.org=s.org;if(AP[s.dst])S.dst=s.dst;}catch(e){}
 function save(){try{localStorage.setItem('aegeanRadar',JSON.stringify({org:S.org,dst:S.dst}))}catch(e){}}
 const edgeOn=e=>(e.a3&&S.showA3)||([...e.al].some(a=>a!=='A3')&&S.showST);
 const fmt=n=>n==null?'—':n.toLocaleString('pt-BR');
+function baseR(){return S.base||AP[S.org].r}
+function owFrom(base,r,cab){const p=rt(base,r);return p&&p.v[cab]!=null?p.v[cab]/2:null}
+let priceScale=null;
+function rebuildScale(){const vals=REG.map(r=>owFrom(baseR(),r.k,S.cab)).filter(v=>v!=null);
+  const mn=Math.min(...vals),mx=Math.max(...vals);priceScale=v=>d3.interpolateRgbBasis(['#3fd6a0','#e8d76b','#ff7a5c'])(mx===mn?0:(v-mn)/(mx-mn));
+  const el=document.getElementById('scale');if(!el)return;el.hidden=!S.priceMode;
+  el.innerHTML=`<span>De ${REG[RI[baseR()]].n} · ${['Y','C','F'][S.cab]} só ida</span><div class="bar" style="background:linear-gradient(90deg,#3fd6a0,#e8d76b,#ff7a5c)"></div><div class="ends"><span>${fmt(mn)}</span><span>${fmt(mx)}</span></div>`}
+const ANCH={EU:[15,50],ME:[44,21],AF:[22,-6],NC:[67,44],FE:[112,32],OC:[138,-26],NA:[-100,42],SA:[-60,-14],HI:[-157,27]};
 
 // ---------- Busca de itinerários ----------
 function findPaths(o,d,maxStops){
@@ -327,7 +350,7 @@ function findPaths(o,d,maxStops){
   out.sort((x,y)=>x.score-y.score);
   return out.slice(0,25);
 }
-function priceFor(o,d){ return rt(AP[o].r,AP[d].r) }
+function priceFor(o,d){ return rt(o===S.org?baseR():AP[o].r,AP[d].r) }
 
 // ---------- UI planner ----------
 const $=id=>document.getElementById(id);
@@ -342,9 +365,10 @@ function syncInputs(){$('org').value=S.org;$('dst').value=S.dst}
 
 function updatePlan(recompute){
   save();
+  syncBase();
   const o=AP[S.org],d=AP[S.dst];
   $('hudSel').innerHTML=`Origem <b>${S.org}</b> · Destino <b>${S.dst}</b>`;
-  const ro=REG[RI[o.r]],rd=REG[RI[d.r]];
+  const ro=REG[RI[baseR()]],rd=REG[RI[d.r]];
   $('pairlbl').innerHTML=`<span class="rdot" style="background:${ro.c}"></span><b>${ro.n}</b> ↔ <span class="rdot" style="background:${rd.c}"></span><b>${rd.n}</b> · ${S.ow?'só ida':'ida e volta'}`;
   const p=priceFor(S.org,S.dst); const div=S.ow?2:1;
   const names=['Y Econômica','C Executiva','F Primeira'];
@@ -375,13 +399,13 @@ function renderChart(){
   let h='<thead><tr><th></th>'+R.map(r=>`<th scope="col"><span class="dot" style="background:${r.c}"></span><br>${r.n}</th>`).join('')+'</tr></thead><tbody>';
   for(const a of R){h+=`<tr><th class="rh" scope="row"><span class="dot" style="background:${a.c}"></span>${a.n}</th>`;
     for(const b of R){const p=rt(a.k,b.k);const v=p&&p.v[S.cab]!=null?p.v[S.cab]/div:null;
-      const sel=S.pair&&((S.pair[0]===a.k&&S.pair[1]===b.k)||(S.pair[0]===b.k&&S.pair[1]===a.k));
+      const pr=S.pair||[baseR(),AP[S.dst].r];const sel=(pr[0]===a.k&&pr[1]===b.k);
       h+=v==null?`<td class="na">—</td>`:`<td class="${p.mir?'mir':''}${sel?' sel':''}" data-a="${a.k}" data-b="${b.k}" style="background:${col(v)}" title="${a.n} ↔ ${b.n}">${fmt(v)}</td>`}
     h+='</tr>'}
   T.innerHTML=h+'</tbody>';
   T.querySelectorAll('td[data-a]').forEach(td=>td.onclick=()=>{const k=[td.dataset.a,td.dataset.b];S.pair=S.pair&&S.pair[0]===k[0]&&S.pair[1]===k[1]?null:k;renderChart();draw();$('mapbox').scrollIntoView({behavior:'smooth',block:'center'})});
 }
-document.querySelectorAll('[data-cab]').forEach(b=>b.onclick=()=>{S.cab=+b.dataset.cab;document.querySelectorAll('[data-cab]').forEach(x=>x.setAttribute('aria-pressed',x===b));renderChart();updatePlan(false)});
+document.querySelectorAll('[data-cab]').forEach(b=>b.onclick=()=>{S.cab=+b.dataset.cab;document.querySelectorAll('[data-cab]').forEach(x=>x.setAttribute('aria-pressed',x===b));updatePlan(false)});
 $('ttOW').onclick=()=>{S.tOW=true;setPressed($('ttOW'),$('ttRT'),true);renderChart()};
 $('ttRT').onclick=()=>{S.tOW=false;setPressed($('ttOW'),$('ttRT'),false);renderChart()};
 
@@ -441,9 +465,10 @@ function draw(){
   ctx.beginPath();gpath({type:'Sphere'});ctx.fillStyle='#0a1722';ctx.fill();
   ctx.beginPath();gpath(grat);ctx.strokeStyle='rgba(120,160,200,.07)';ctx.lineWidth=.6/k;ctx.stroke();
   for(const f of countries){ if(!f.reg){ctx.beginPath();gpath(f);ctx.fillStyle=C['--land'];ctx.fill();continue}
-    const col=d3.color(REG[RI[f.reg]].c); const dim=S.pair&&!(f.reg===S.pair[0]||f.reg===S.pair[1]);
-    const isO=f.reg===AP[S.org].r, isD=f.reg===AP[S.dst].r;
-    col.opacity=dim?.06:(f===hoverC?.55:(isO||isD?.34:.22));
+    let col; if(S.priceMode){const v=owFrom(baseR(),f.reg,S.cab);col=d3.color(v==null?'#3a4a5a':priceScale(v))} else col=d3.color(REG[RI[f.reg]].c);
+    const dim=S.pair&&!(f.reg===S.pair[0]||f.reg===S.pair[1]);
+    const isO=f.reg===baseR(), isD=f.reg===AP[S.dst].r;
+    col.opacity=dim?.06:(f===hoverC?.6:(isD?.5:(S.priceMode?.32:(isO?.34:.22))));
     ctx.beginPath();gpath(f);ctx.fillStyle=col+'';ctx.fill() }
   if(borders){ctx.beginPath();gpath(borders);ctx.strokeStyle='rgba(8,18,28,.75)';ctx.lineWidth=.7/k;ctx.stroke()}
   if(hoverC){ctx.beginPath();gpath(hoverC);ctx.strokeStyle='rgba(255,255,255,.7)';ctx.lineWidth=1.2/k;ctx.stroke()}
@@ -483,6 +508,17 @@ function draw(){
     if(isEnd||inP||k>3.2||a.c==='ATH'||(pairOn&&!dimmed&&k>1.6)){ctx.font=`${(isEnd||inP?600:500)} ${11/k}px "IBM Plex Mono", monospace`;ctx.fillStyle=isEnd||inP?'#ffffff':C['--muted'];ctx.fillText(a.c,p[0]+r+3/k,p[1]-r)}
     ctx.globalAlpha=1;
   }
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  const b=baseR();
+  for(const r of REG){const p=proj(ANCH[r.k]);if(!p)continue;const x=p[0]*k+T.x,y=p[1]*k+T.y;if(x<-60||x>W+60||y<-30||y>H+30)continue;
+    const v=owFrom(b,r.k,S.cab);const isB=r.k===b,isD=r.k===AP[S.dst].r;
+    const t1=v==null?'sem preço':fmt(v), t2=isB?'BASE · '+r.n:r.n;
+    ctx.font='600 13px "IBM Plex Mono", monospace';const w1=ctx.measureText(t1).width;ctx.font='500 10px "IBM Plex Sans", sans-serif';const w2=ctx.measureText(t2).width;
+    const w=Math.max(w1,w2)+16,h=34;const bx=x-w/2,by=y-h/2;
+    ctx.fillStyle='rgba(8,18,28,.88)';ctx.strokeStyle=isD?C['--hl']:(isB?'#ffffff':(v==null?'#3a4a5a':priceScale(v)));ctx.lineWidth=isD||isB?1.6:1;
+    ctx.beginPath();ctx.roundRect(bx,by,w,h,6);ctx.fill();ctx.stroke();
+    ctx.fillStyle=v==null?C['--muted']:(S.priceMode?priceScale(v):'#fff');ctx.font='600 13px "IBM Plex Mono", monospace';ctx.textAlign='center';ctx.fillText(t1,x,by+15);
+    ctx.fillStyle=C['--muted'];ctx.font='500 10px "IBM Plex Sans", sans-serif';ctx.fillText(t2,x,by+28);ctx.textAlign='left'}
 }
 let last=0;function tick(ts){if(S.anim&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const dt=Math.min(50,ts-last||16);for(const p of planes){p.t+=p.sp*dt/16*(1500/Math.max(800,p.e.km))*2;if(p.t>1){p.t=0;const es=[...EDGES.values()];p.e=es[Math.floor(Math.random()*es.length)];p.dir=Math.random()<.5}}draw()}last=ts;requestAnimationFrame(tick)}
 
@@ -495,12 +531,14 @@ cv.addEventListener('mousemove',ev=>{const r=cv.getBoundingClientRect();const mx
   let html='';
   if(a){const n=ADJ[a.c].filter(edgeOn);const a3=n.filter(e=>e.a3).length;const p=priceFor(S.org,a.c);const y=p&&p.v[0]!=null?p.v[0]/2:null;
     html=`<b>${a.c}</b> ${a.n} · ${a.country}<br><span style="color:${REG[RI[a.r]].c}">${REG[RI[a.r]].n}</span><br>${n.length?n.length+' rotas na rede':'sem rota na rede de exemplo'}${a3?` · <span style="color:var(--a3)">${a3} Aegean</span>`:''}${y&&a.c!==S.org?`<br>De ${S.org}: <b>${fmt(y)}</b> mi Y só ida`:''}`}
-  else if(f&&f.reg){const c=CBY[f.properties.name];const p=rt(AP[S.org].r,f.reg);const v=p?p.v.map(x=>x==null?'—':fmt(x/2)):null;
-    html=`<b>${f.pt}</b><br><span style="color:${REG[RI[f.reg]].c}">${REG[RI[f.reg]].n}</span>${c&&c.ap.length?`<br><span class="mono">${c.ap.map(x=>x[0]).join(' · ')}</span>`:''}${v?`<br>De ${S.org} (OW): Y <b>${v[0]}</b> · C <b>${v[1]}</b> · F <b>${v[2]}</b>`:'<br>Sem preço publicado'}`}
+  else if(f&&f.reg){const c=CBY[f.properties.name];const p=rt(baseR(),f.reg);const v=p?p.v.map(x=>x==null?'—':fmt(x/2)):null;
+    html=`<b>${f.pt}</b><br><span style="color:${REG[RI[f.reg]].c}">${REG[RI[f.reg]].n}</span>${c&&c.ap.length?`<br><span class="mono">${c.ap.map(x=>x[0]).join(' · ')}</span>`:''}${v?`<br>De ${REG[RI[baseR()]].n} (OW): Y <b>${v[0]}</b> · C <b>${v[1]}</b> · F <b>${v[2]}</b>`:'<br>Sem preço publicado'}`}
   if(!html){tip.hidden=true;return}
   tip.innerHTML=html;tip.hidden=false;let x=mx+14,yy=my+14;if(x>W-250)x-=264;if(yy>H-90)yy-=100;tip.style.left=x+'px';tip.style.top=yy+'px'});
 cv.addEventListener('mouseleave',()=>{$('tip').hidden=true;hoverC=null;draw()});
-cv.addEventListener('click',ev=>{const r=cv.getBoundingClientRect();const a=nearest(ev.clientX-r.left,ev.clientY-r.top);if(!a)return;
+cv.addEventListener('click',ev=>{const r=cv.getBoundingClientRect();let a=nearest(ev.clientX-r.left,ev.clientY-r.top);
+  if(!a&&hoverC){const c=CBY[hoverC.properties.name];if(c&&c.ap.length){S.dst=c.ap[0][0];syncInputs();updatePlan(true);return}}
+  if(!a)return;
   if(pickNext==='org'){S.org=a.c;pickNext='dst';renderSpots();renderCountries()}else{if(a.c===S.org)return;S.dst=a.c;pickNext='org'}
   syncInputs();updatePlan(true)});
 
@@ -516,14 +554,22 @@ function renderCountries(){
   const q=($('cq').value||'').trim().toLowerCase(), rf=$('cr').value;
   const rows=COUNTRIES.filter(c=>c.r&&(!rf||c.r===rf)&&(!q||c.pt.toLowerCase().includes(q)||c.en.toLowerCase().includes(q)||c.ap.some(a=>a[0].toLowerCase()===q||a[1].toLowerCase().includes(q))))
     .sort((a,b)=>RI[a.r]-RI[b.r]||a.pt.localeCompare(b.pt,'pt'));
-  const op=AP[S.org].r;
-  $('ctab').innerHTML='<thead><tr><th>País</th><th>Região</th><th>Aeroportos</th><th>De '+S.org+' (Y OW)</th></tr></thead><tbody>'+rows.map(c=>{const p=rt(op,c.r);const reg=REG[RI[c.r]];
-    return `<tr><td>${c.pt}</td><td><span class="rdot" style="background:${reg.c}"></span>${reg.n}</td><td class="codes">${c.ap.map(a=>`<button data-c="${a[0]}" title="${a[1]}">${a[0]}</button>`).join('')||'—'}</td><td class="mono">${p&&p.v[0]!=null?fmt(p.v[0]/2):'—'}</td></tr>`}).join('')+'</tbody>';
+  const op=baseR();
+  $('ctab').innerHTML='<thead><tr><th>País</th><th>Região</th><th>Aeroportos</th><th>De '+REG[RI[op]].n+' ('+['Y','C','F'][S.cab]+' OW)</th></tr></thead><tbody>'+rows.map(c=>{const p=rt(op,c.r);const reg=REG[RI[c.r]];
+    return `<tr><td>${c.pt}</td><td><span class="rdot" style="background:${reg.c}"></span>${reg.n}</td><td class="codes">${c.ap.map(a=>`<button data-c="${a[0]}" title="${a[1]}">${a[0]}</button>`).join('')||'—'}</td><td class="mono">${p&&p.v[S.cab]!=null?fmt(p.v[S.cab]/2):'—'}</td></tr>`}).join('')+'</tbody>';
   $('ctab').querySelectorAll('button[data-c]').forEach(b=>b.onclick=()=>{S.dst=b.dataset.c;syncInputs();updatePlan(true);$('mapbox').scrollIntoView({behavior:'smooth',block:'center'})});
 }
 $('cr').innerHTML+=REG.map(r=>`<option value="${r.k}">${r.n}</option>`).join('');
 $('cq').addEventListener('input',renderCountries);$('cr').addEventListener('change',renderCountries);
-cols();syncInputs();renderCountries();renderChart();renderNet();renderSpots();
+
+let lastOrgR=null;
+function syncBase(){const r=AP[S.org].r;if(r!==lastOrgR){S.base=r;lastOrgR=r}$('baseSel').value=baseR();$('cabSel').value=S.cab;rebuildScale();renderChart();renderCountries()}
+$('baseSel').innerHTML=REG.filter(r=>r.k!=='HI').map(r=>`<option value="${r.k}">${r.n}</option>`).join('');
+$('baseSel').onchange=e=>{S.base=e.target.value;updatePlan(false)};
+$('cabSel').onchange=e=>{S.cab=+e.target.value;document.querySelectorAll('[data-cab]').forEach(x=>x.setAttribute('aria-pressed',+x.dataset.cab===S.cab));updatePlan(false)};
+$('mPrice').onclick=()=>{S.priceMode=true;setPressed($('mPrice'),$('mReg'),true);rebuildScale();draw()};
+$('mReg').onclick=()=>{S.priceMode=false;setPressed($('mPrice'),$('mReg'),false);rebuildScale();draw()};
+cols();syncInputs();rebuildScale();renderCountries();renderChart();renderNet();renderSpots();
 new ResizeObserver(resize).observe($('mapbox'));
 updatePlan(true);requestAnimationFrame(tick);
 </script>
