@@ -33,7 +33,7 @@ td small{color:#3a4a5e}
   <div><div class="tt">Regiões</div><div class="legend" id="legend"></div></div>
   <div class="tablebox"><div class="tt" id="tabt"></div><table id="tab"></table>
   <div class="rules"><div><b>Com conexão vale só a região de origem e a de destino final:</b> POA → PTY → IST = América Central &amp; Sul ↔ Europa = <span id="ex1"></span>. POA → PTY = <span id="ex2"></span>.</div>
-  <div>Europa ↔ Europa não tem Primeira (F). Havaí é região própria, sem valores publicados na tabela. Rússia-Sibéria conta como Ásia Central (o mapa pinta a Rússia inteira como Europa).</div></div></div>
+  <div>Europa ↔ Europa não tem Primeira (F). Rússia-Sibéria conta como Ásia Central (o mapa pinta a Rússia inteira como Europa).</div></div></div>
 </div></div>
 <script src="D3SRC"></script><script src="TOPOSRC"></script>
 <script>
@@ -46,9 +46,8 @@ const REG=[
  {k:'NC',n:'Oriente Próximo & Ásia Central',c:'#f1b3cc',inc:'Índia, Paquistão, Bangladesh, Sri Lanka, Nepal, Maldivas, Afeganistão, "-stões", Sibéria'},
  {k:'FE',n:'Extremo Oriente',c:'#f2a39c',inc:'China, Japão, Coreias, Taiwan, Mongólia e Sudeste Asiático'},
  {k:'OC',n:'Oceania',c:'#99d9cf',inc:'Austrália, Nova Zelândia, ilhas do Pacífico, Ilha de Páscoa'},
- {k:'NA',n:'América do Norte',c:'#c9b5ef',inc:'EUA (sem Havaí), Canadá, México, Caribe, Groenlândia, Bermudas'},
- {k:'SA',n:'América Central & Sul',c:'#ade0a2',inc:'América Central (Belize ao Panamá) e toda a América do Sul'},
- {k:'HI',n:'Havaí',c:'#d5dde6',inc:'Ilhas do Havaí: sem valores publicados'}];
+ {k:'NA',n:'América do Norte',c:'#c9b5ef',inc:'EUA, Canadá, México, Caribe, Groenlândia, Bermudas'},
+ {k:'SA',n:'América Central & Sul',c:'#ade0a2',inc:'América Central (Belize ao Panamá) e toda a América do Sul'}];
 const RI=Object.fromEntries(REG.map((r,i)=>[r.k,i]));
 const RAW={EU:{EU:[30,50,null],ME:[40,60,90],AF:[80,110,150],NC:[70,110,150],FE:[90,130,180],OC:[100,150,200],NA:[70,110,150],SA:[80,110,150]},
 ME:{ME:[25,42,80],AF:[40,60,90],NC:[40,60,90],FE:[60,90,120],OC:[80,110,150],NA:[80,110,150],SA:[80,110,150]},
@@ -76,7 +75,7 @@ svg.append('path').attr('d',path(d3.geoGraticule10())).attr('fill','none').attr(
 svg.append('g').selectAll('path').data(feats).join('path').attr('d',path)
   .attr('fill',f=>{const c=CBY[f.properties.name];return c&&c.r?REG[RI[c.r]].c:'#eef1f4'}).attr('stroke','#ffffff').attr('stroke-width',.5);
 // region labels
-const ANCH={EU:[38,57],ME:[46,19],AF:[22,-8],NC:[79,21],FE:[105,38],OC:[134,-25],NA:[-100,45],SA:[-60,-12],HI:[-157,26]};
+const ANCH={EU:[38,57],ME:[46,19],AF:[22,-8],NC:[79,21],FE:[105,38],OC:[134,-25],NA:[-100,45],SA:[-60,-12]};
 const LBL=svg.append('g');
 for(const r of REG){const p=proj(ANCH[r.k]);LBL.append('text').attr('x',p[0]).attr('y',p[1]).attr('text-anchor','middle').attr('font-size',13).attr('font-weight',800).attr('fill','#14233a').attr('opacity',.55).attr('letter-spacing','.04em').text(r.n.toUpperCase())}
 // airports with simple collision avoidance

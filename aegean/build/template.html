@@ -220,7 +220,6 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
       <ul class="rules">
         <li><b>Só ida = metade da ida e volta.</b> POA → PTY: América Central e do Sul ↔ mesma região = 25.000 RT, logo <b>12.500 OW</b> na Econômica.</li>
         <li><b>Com conexão, vale só a região de origem e a de destino final.</b> POA → PTY → IST cobra Central/Sul América ↔ Europa = 80.000 RT, logo <b>40.000 OW</b>. A região do ponto de conexão não entra no preço.</li>
-        <li>Havaí aparece sem preços publicados na tabela.</li>
         <li>Itinerários com 2 conexões são mostrados para referência; confirme no site da Aegean se o roteiro é aceito antes de transferir milhas.</li>
       </ul>
       <div style="display:grid;gap:6px">
@@ -258,7 +257,6 @@ const REG = [
   {k:'OC', n:'Oceania', c:'#5fe0d0'},
   {k:'NA', n:'América do Norte', c:'#b48cff'},
   {k:'SA', n:'América Central & Sul', c:'#7ee07a'},
-  {k:'HI', n:'Havaí', c:'#c9d4de'},
 ];
 const RI = Object.fromEntries(REG.map((r,i)=>[r.k,i]));
 const RAW = {
@@ -270,7 +268,6 @@ const RAW = {
   OC:{OC:[25,42,80],NA:[100,150,200],SA:[100,150,200]},
   NA:{NA:[25,42,80],SA:[60,90,120]},
   SA:{SA:[25,42,80]},
-  HI:{}
 };
 function rt(a,b){ // retorna [Y,C,F] RT em milhas ou null; flag mirror
   if(RAW[a] && RAW[a][b]) return {v:RAW[a][b].map(x=>x==null?null:x*1000),mir:false};
@@ -297,16 +294,16 @@ const RAWR = {
  OS:{VIE:'JFK IAD ORD YYZ BKK TLV AMM BEY TBS EVN NRT DEL ATH LHR CDG'},
  SN:{BRU:'JFK IAD TLV ACC LOS ATH'},
  TP:{LIS:'GRU GIG BSB CNF JFK EWR MIA YYZ IAD SFO ACC LAD CMN ATH LHR CDG FRA MUC ZRH MAD BCN FCO'},
- UA:{EWR:'GRU GIG EZE BOG LIM ATH TLV LHR FRA LIS ZRH', IAH:'GRU EZE BOG PTY LIM SCL SYD NRT FRA', SFO:'SYD MEL AKL HNL NRT ICN SIN PVG HKG FRA MUC', LAX:'HNL SYD', ORD:'HNL'},
+ UA:{EWR:'GRU GIG EZE BOG LIM ATH TLV LHR FRA LIS ZRH', IAH:'GRU EZE BOG PTY LIM SCL SYD NRT FRA', SFO:'SYD MEL AKL NRT ICN SIN PVG HKG FRA MUC', LAX:'SYD', ORD:'HNL'},
  AC:{YYZ:'GRU BOG LHR FRA ATH DEL HND', YUL:'ATH'},
  ET:{ADD:'GRU JNB CPT NBO LOS ACC LAD DXB RUH JED TLV DEL BOM BKK PEK PVG HKG NRT ICN FRA LHR CDG ATH IAD EWR ORD YYZ'},
  MS:{CAI:'ATH JFK YYZ LHR FRA JNB NBO ADD LOS ACC RUH JED KWI BEY AMM DEL BOM PEK'},
  SA:{JNB:'GRU CPT LOS ACC PER'},
  LO:{WAW:'JFK ORD EWR YYZ TLV ICN HND TAS DEL'},
  SK:{CPH:'JFK EWR ORD LAX SFO MIA PVG HND', ARN:'JFK EWR'},
- NH:{HND:'JFK ORD IAH LAX SFO HNL FRA MUC LHR SIN BKK SYD DEL', NRT:'IAH YYZ'},
+ NH:{HND:'JFK ORD IAH LAX SFO FRA MUC LHR SIN BKK SYD DEL', NRT:'IAH YYZ'},
  SQ:{SIN:'SYD MEL PER AKL JFK EWR LAX SFO FRA MUC ZRH LHR CDG IST DEL BOM CMB KTM JNB BKK HKG ICN NRT PVG PEK MNL KUL TPE'},
- NZ:{AKL:'SYD MEL PER LAX SFO IAH JFK HNL NRT SIN'},
+ NZ:{AKL:'SYD MEL PER LAX SFO IAH JFK NRT SIN'},
  CA:{PEK:'FRA ATH LHR CDG MAD JFK LAX SFO IAH SYD MEL SIN BKK NRT ICN'},
  OZ:{ICN:'JFK LAX SFO SYD FRA IST BKK SIN'},
  TG:{BKK:'FRA MUC ZRH LHR CPH SYD MEL NRT HND ICN SIN DEL BOM KTM CMB'},
@@ -319,8 +316,8 @@ const EXTRA = {
  A3:{ATH:'DUS GVA PRG NCE MAN'},
  CM:{PTY:'MEX CUN HAV PUJ SDQ MBJ KIN SJU NAS POS GUA SAL SAP XPL MGA UIO GYE MDE ASU VVI GEO PBM COR LIR BOS DEN'},
  AV:{BOG:'MDE UIO GYE MEX CUN GUA SAL HAV PUJ', SAL:'GUA IAD LAX JFK'},
- UA:{EWR:'MEX CUN SJU DUB MAN KEF PRG NCE GVA OPO BOS DEN', IAH:'MEX CUN BZE', ORD:'DEN BOS DUB', SFO:'DEN BOS OGG PPT', LAX:'OGG', DEN:'OGG'},
- AC:{YYZ:'YVR MEX CUN PUJ HAV DUB', YVR:'HND SYD OGG YUL', YUL:'CUN PUJ'},
+ UA:{EWR:'MEX CUN SJU DUB MAN KEF PRG NCE GVA OPO BOS DEN', IAH:'MEX CUN BZE', ORD:'DEN BOS DUB', SFO:'DEN BOS PPT', LAX:'', DEN:''},
+ AC:{YYZ:'YVR MEX CUN PUJ HAV DUB', YVR:'HND SYD YUL', YUL:'CUN PUJ'},
  LH:{FRA:'LJU DBV DUB MAN OSL HEL TLL RIX VNO KRK PRG ZAG SJJ KEF NCE GVA OPO MLA DEN BOS MEX CUN LOS ABV LAD ADD DXB', MUC:'DUB OSL HEL KRK PRG ZAG NCE OPO MLA LUX DUS DEN BOS YVR MEX CUN'},
  LX:{ZRH:'DUB MAN OSL HEL PRG KRK ZAG PRN KEF NCE OPO MLA BOS CUN PUJ DXB MCT'},
  OS:{VIE:'SJJ TGD PRN SKP RMO ZAG GYD'},
@@ -368,7 +365,7 @@ function rebuildScale(){const vals=REG.map(r=>owFrom(baseR(),r.k,S.cab)).filter(
   const mn=Math.min(...vals),mx=Math.max(...vals);priceScale=v=>d3.interpolateRgbBasis(['#3fd6a0','#e8d76b','#ff7a5c'])(mx===mn?0:(v-mn)/(mx-mn));
   const el=document.getElementById('scale');if(!el)return;el.hidden=!S.priceMode;
   el.innerHTML=`<span>De ${REG[RI[baseR()]].n} · ${['Y','C','F'][S.cab]} só ida</span><div class="bar" style="background:linear-gradient(90deg,#3fd6a0,#e8d76b,#ff7a5c)"></div><div class="ends"><span>${fmt(mn)}</span><span>${fmt(mx)}</span></div>`}
-const ANCH={EU:[15,50],ME:[44,21],AF:[22,-6],NC:[67,44],FE:[112,32],OC:[138,-26],NA:[-100,42],SA:[-60,-14],HI:[-157,27]};
+const ANCH={EU:[15,50],ME:[44,21],AF:[22,-6],NC:[67,44],FE:[112,32],OC:[138,-26],NA:[-100,42],SA:[-60,-14]};
 
 // ---------- Busca de itinerários ----------
 function findPaths(o,d,maxStops){
@@ -409,7 +406,7 @@ function updatePlan(recompute){
   const p=priceFor(S.org,S.dst); const div=S.ow?2:1;
   const names=['Y Econômica','C Executiva'];
   $('price').innerHTML=names.map((n,i)=>{const v=p&&p.v[i]!=null?p.v[i]/div:null;return `<div class="pbox${i===S.cab?' on':''}"><div class="k">${n}</div><div class="v">${v==null?'—':fmt(v)}</div></div>`}).join('');
-  $('pricenote').innerHTML = !p ? 'Sem preço publicado para este par de regiões (Havaí).' :
+  $('pricenote').innerHTML = !p ? 'Sem preço publicado para este par de regiões.' :
     (S.org===S.dst?'Origem e destino iguais.':`Preço pela região de origem e destino final; a conexão não muda o valor.${S.ow?' Só ida = 50% da tabela.':''}`)+(baseR()!==o.r?` <b>O mapa está colorido a partir de ${REG[RI[baseR()]].n}</b> (região base escolhida à mão); este preço usa a origem ${S.org}.`:'');
   if(recompute){S.paths=S.org===S.dst?[]:findPaths(S.org,S.dst,S.stops);S.selPath=0}
   renderResults();
@@ -600,7 +597,7 @@ $('cr').innerHTML+=REG.map(r=>`<option value="${r.k}">${r.n}</option>`).join('')
 $('cq').addEventListener('input',renderCountries);$('cr').addEventListener('change',renderCountries);
 
 function syncBase(){$('baseSel').value=baseR();$('cabSel').value=S.cab;rebuildScale();renderChart();renderCountries()}
-$('baseSel').innerHTML=REG.filter(r=>r.k!=='HI').map(r=>`<option value="${r.k}">${r.n}</option>`).join('');
+$('baseSel').innerHTML=REG.map(r=>`<option value="${r.k}">${r.n}</option>`).join('');
 $('baseSel').onchange=e=>{S.base=e.target.value;S.baseFor=S.org;updatePlan(false)};
 $('cabSel').onchange=e=>{S.cab=+e.target.value;document.querySelectorAll('[data-cab]').forEach(x=>x.setAttribute('aria-pressed',+x.dataset.cab===S.cab));updatePlan(false);renderSpots()};
 $('mPrice').onclick=()=>{S.priceMode=true;setPressed($('mPrice'),$('mReg'),true);rebuildScale();draw()};
