@@ -39,6 +39,7 @@ Grécia,Europa & Norte da África,EU,JMK,Mykonos,37.44,25.35
 Hungria,Europa & Norte da África,EU,BUD,Budapeste,47.44,19.26
 Irlanda,Europa & Norte da África,EU,DUB,Dublin,53.42,-6.27
 Islândia,Europa & Norte da África,EU,KEF,Reykjavík,63.99,-22.62
+Israel,Europa & Norte da África,EU,TLV,Tel Aviv,32.01,34.89
 Itália,Europa & Norte da África,EU,FCO,Roma,41.8,12.25
 Itália,Europa & Norte da África,EU,MXP,Milão,45.63,8.72
 Kosovo,Europa & Norte da África,EU,PRN,Pristina,42.57,21.04
@@ -53,6 +54,7 @@ Marrocos,Europa & Norte da África,EU,RAK,Marrakech,31.61,-8.04
 Moldávia,Europa & Norte da África,EU,RMO,Chisinau,46.93,28.93
 Montenegro,Europa & Norte da África,EU,TGD,Podgorica,42.36,19.25
 Noruega,Europa & Norte da África,EU,OSL,Oslo,60.19,11.1
+Palestina,Europa & Norte da África,EU,,,,
 Países Baixos,Europa & Norte da África,EU,AMS,Amsterdã,52.31,4.77
 Polônia,Europa & Norte da África,EU,WAW,Varsóvia,52.17,20.97
 Polônia,Europa & Norte da África,EU,KRK,Cracóvia,50.08,19.78
@@ -85,13 +87,11 @@ Emirados Árabes,Oriente Médio,ME,AUH,Abu Dhabi,24.43,54.65
 Iraque,Oriente Médio,ME,BGW,Bagdá,33.26,44.23
 Iraque,Oriente Médio,ME,EBL,Erbil,36.24,43.96
 Irã,Oriente Médio,ME,IKA,Teerã,35.42,51.15
-Israel,Oriente Médio,ME,TLV,Tel Aviv,32.01,34.89
 Iêmen,Oriente Médio,ME,SAH,Sanaa,15.48,44.22
 Jordânia,Oriente Médio,ME,AMM,Amã,31.72,35.99
 Kuwait,Oriente Médio,ME,KWI,Kuwait,29.24,47.97
 Líbano,Oriente Médio,ME,BEY,Beirute,33.82,35.49
 Omã,Oriente Médio,ME,MCT,Mascate,23.59,58.28
-Palestina,Oriente Médio,ME,,,,
 Síria,Oriente Médio,ME,DAM,Damasco,33.41,36.52
 Angola,África Central & Sul,AF,LAD,Luanda,-8.86,13.23
 Benin,África Central & Sul,AF,COO,Cotonou,6.36,2.38
@@ -113,9 +113,12 @@ Guiné,África Central & Sul,AF,CKY,Conacri,9.58,-13.61
 Guiné Equatorial,África Central & Sul,AF,SSG,Malabo,3.76,8.71
 Guiné-Bissau,África Central & Sul,AF,OXB,Bissau,11.89,-15.65
 Gâmbia,África Central & Sul,AF,BJL,Banjul,13.34,-16.65
+Ilhas Canárias (Espanha),África Central & Sul,AF,LPA,Gran Canaria,27.93,-15.39
+Ilhas Canárias (Espanha),África Central & Sul,AF,TFS,Tenerife Sul,28.04,-16.57
 Lesoto,África Central & Sul,AF,MSU,Maseru,-29.46,27.55
 Libéria,África Central & Sul,AF,ROB,Monróvia,6.23,-10.36
 Madagascar,África Central & Sul,AF,TNR,Antananarivo,-18.8,47.48
+Madeira (Portugal),África Central & Sul,AF,FNC,Funchal,32.7,-16.77
 Malawi,África Central & Sul,AF,LLW,Lilongwe,-13.79,33.78
 Mali,África Central & Sul,AF,BKO,Bamako,12.53,-7.95
 Mauritânia,África Central & Sul,AF,NKC,Nouakchott,18.31,-15.97
@@ -129,6 +132,7 @@ Quênia,África Central & Sul,AF,NBO,Nairóbi,-1.32,36.93
 Quênia,África Central & Sul,AF,MBA,Mombaça,-4.03,39.59
 RD Congo,África Central & Sul,AF,FIH,Kinshasa,-4.39,15.44
 Rep. Centro-Africana,África Central & Sul,AF,BGF,Bangui,4.4,18.52
+Reunião (França),África Central & Sul,AF,RUN,Saint-Denis,-20.89,55.51
 Ruanda,África Central & Sul,AF,KGL,Kigali,-1.97,30.14
 Senegal,África Central & Sul,AF,DSS,Dakar,14.67,-17.07
 Serra Leoa,África Central & Sul,AF,FNA,Freetown,8.62,-13.2
@@ -190,6 +194,7 @@ Austrália,Oceania,OC,SYD,Sydney,-33.95,151.18
 Austrália,Oceania,OC,MEL,Melbourne,-37.67,144.84
 Austrália,Oceania,OC,PER,Perth,-31.94,115.97
 Fiji,Oceania,OC,NAN,Nadi,-17.76,177.44
+Ilha de Páscoa (Chile),Oceania,OC,IPC,Hanga Roa,-27.16,-109.42
 Ilhas Salomão,Oceania,OC,HIR,Honiara,-9.43,160.05
 Nova Caledônia,Oceania,OC,NOU,Nouméa,-22.01,166.21
 Nova Zelândia,Oceania,OC,AKL,Auckland,-37.01,174.79
@@ -221,6 +226,7 @@ México,América do Norte,NA,CUN,Cancún,21.04,-86.87
 Porto Rico,América do Norte,NA,SJU,San Juan,18.44,-66.0
 Rep. Dominicana,América do Norte,NA,PUJ,Punta Cana,18.57,-68.36
 Rep. Dominicana,América do Norte,NA,SDQ,Santo Domingo,18.43,-69.67
+Trinidad e Tobago,América do Norte,NA,POS,Port of Spain,10.6,-61.34
 Argentina,América Central & Sul,SA,EZE,Buenos Aires,-34.82,-58.54
 Argentina,América Central & Sul,SA,COR,Córdoba,-31.32,-64.21
 Belize,América Central & Sul,SA,BZE,Belize City,17.54,-88.31
@@ -252,7 +258,6 @@ Paraguai,América Central & Sul,SA,ASU,Assunção,-25.24,-57.52
 Peru,América Central & Sul,SA,LIM,Lima,-12.02,-77.11
 Peru,América Central & Sul,SA,CUZ,Cusco,-13.54,-71.94
 Suriname,América Central & Sul,SA,PBM,Paramaribo,5.45,-55.19
-Trinidad e Tobago,América Central & Sul,SA,POS,Port of Spain,10.6,-61.34
 Uruguai,América Central & Sul,SA,MVD,Montevidéu,-34.84,-56.03
 Venezuela,América Central & Sul,SA,CCS,Caracas,10.6,-66.99
 Havaí (EUA),Havaí,HI,HNL,Honolulu,21.32,-157.92

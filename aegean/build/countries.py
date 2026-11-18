@@ -29,7 +29,7 @@ C = [
 ("Jamaica","Jamaica","NA",[("MBJ","Montego Bay",18.50,-77.91),("KIN","Kingston",17.94,-76.79)]),
 ("Puerto Rico","Porto Rico","NA",[("SJU","San Juan",18.44,-66.00)]),
 ("Bahamas","Bahamas","NA",[("NAS","Nassau",25.04,-77.47)]),
-("Trinidad and Tobago","Trinidad e Tobago","SA",[("POS","Port of Spain",10.60,-61.34)]),
+("Trinidad and Tobago","Trinidad e Tobago","NA",[("POS","Port of Spain",10.60,-61.34)]),
 ("Falkland Is.","Ilhas Malvinas","SA",[("MPN","Mount Pleasant",-51.82,-58.45)]),
 # --- América do Norte ---
 ("United States of America","Estados Unidos","NA",[("JFK","Nova York JFK",40.64,-73.78),("EWR","Newark",40.69,-74.17),("IAD","Washington",38.95,-77.46),("MIA","Miami",25.79,-80.29),("IAH","Houston",29.98,-95.34),("ORD","Chicago",41.97,-87.90),("LAX","Los Angeles",33.94,-118.41),("SFO","São Francisco",37.62,-122.38),("DEN","Denver",39.86,-104.67),("BOS","Boston",42.36,-71.01)]),
@@ -91,8 +91,8 @@ C = [
 ("Morocco","Marrocos","EU",[("CMN","Casablanca",33.37,-7.59),("RAK","Marrakech",31.61,-8.04)]),
 ("W. Sahara","Saara Ocidental","EU",[("EUN","Laayoune",27.15,-13.22)]),
 # --- Oriente Médio ---
-("Israel","Israel","ME",[("TLV","Tel Aviv",32.01,34.89)]),
-("Palestine","Palestina","ME",[]),
+("Israel","Israel","EU",[("TLV","Tel Aviv",32.01,34.89)]),
+("Palestine","Palestina","EU",[]),
 ("Lebanon","Líbano","ME",[("BEY","Beirute",33.82,35.49)]),
 ("Jordan","Jordânia","ME",[("AMM","Amã",31.72,35.99)]),
 ("Syria","Síria","ME",[("DAM","Damasco",33.41,36.52)]),
@@ -153,6 +153,9 @@ C = [
 ("eSwatini","Essuatíni","AF",[("SHO","Manzini",-26.36,31.72)]),
 ("Madagascar","Madagascar","AF",[("TNR","Antananarivo",-18.80,47.48)]),
 ("__Mauritius","Maurício","AF",[("MRU","Maurício",-20.43,57.68)]),
+("__Canary Islands","Ilhas Canárias (Espanha)","AF",[("LPA","Gran Canaria",27.93,-15.39),("TFS","Tenerife Sul",28.04,-16.57)]),
+("__Madeira","Madeira (Portugal)","AF",[("FNC","Funchal",32.70,-16.77)]),
+("__Reunion","Reunião (França)","AF",[("RUN","Saint-Denis",-20.89,55.51)]),
 ("__Seychelles","Seychelles","AF",[("SEZ","Mahé",-4.67,55.52)]),
 # --- Oriente Próximo & Ásia Central ---
 ("India","Índia","NC",[("DEL","Nova Délhi",28.56,77.10),("BOM","Mumbai",19.09,72.87)]),
@@ -195,5 +198,6 @@ C = [
 ("Vanuatu","Vanuatu","OC",[("VLI","Port Vila",-17.70,168.32)]),
 ("Solomon Is.","Ilhas Salomão","OC",[("HIR","Honiara",-9.43,160.05)]),
 ("New Caledonia","Nova Caledônia","OC",[("NOU","Nouméa",-22.01,166.21)]),
+("__Easter Island","Ilha de Páscoa (Chile)","OC",[("IPC","Hanga Roa",-27.16,-109.42)]),
 ("__French Polynesia","Polinésia Francesa","OC",[("PPT","Papeete",-17.55,-149.61)]),
 ]
