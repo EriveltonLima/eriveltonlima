@@ -48,6 +48,9 @@ canvas#map:active{cursor:grabbing}
 .scale .bar{height:8px;border-radius:4px}
 .scale .ends{display:flex;justify-content:space-between}
 @media (max-width:900px){.scale{display:none}.hud .tag:nth-child(2){display:none}}
+.clearbar{position:absolute;right:52px;top:10px}
+.clearbar .chip{background:rgba(8,18,28,.88)}
+@media (max-width:700px){.clearbar{top:auto;bottom:118px;right:10px}}
 #tip{position:absolute;pointer-events:none;background:rgba(8,18,28,.94);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:12px;max-width:240px}
 #tip b{font-family:var(--f-mono)}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:14px;align-content:start;min-width:0}
@@ -148,6 +151,7 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
         <div class="tag" id="hudSel">Origem <b>—</b> · Destino <b>—</b></div>
         <div class="tag" id="hudCount"></div>
       </div>
+      <div class="clearbar"><button class="chip" id="clearSel2">✕ Limpar seleções</button></div>
       <div class="basebar">
         <label for="baseSel">Região base<select id="baseSel"></select></label>
         <label for="cabSel">Classe<select id="cabSel"><option value="0">Y Econômica</option><option value="1">C Executiva</option></select></label>
@@ -158,6 +162,7 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
         <button id="zin" aria-label="Aproximar">+</button>
         <button id="zout" aria-label="Afastar">−</button>
         <button id="zreset" aria-label="Ver mundo" title="Ver mundo">⌂</button>
+        <button id="clearSel" aria-label="Limpar seleções do mapa" title="Limpar seleções do mapa">✕</button>
       </div>
       <div id="tip" hidden></div>
     </div>
@@ -386,7 +391,7 @@ const other=(e,c)=>e.a===c?e.b:e.a;
 
 // ---------- Estado ----------
 let pickNext='dst';
-const S={focus:null,alHL:false,base:null,priceMode:true,org:'POA',dst:'IST',ow:true,stops:1,cab:0,tOW:true,showA3:true,showST:true,anim:true,pair:null,paths:[],selPath:0};
+const S={cleared:false,focus:null,alHL:false,base:null,priceMode:true,org:'POA',dst:'IST',ow:true,stops:1,cab:0,tOW:true,showA3:true,showST:true,anim:true,pair:null,paths:[],selPath:0};
 try{const s=JSON.parse(localStorage.getItem('aegeanRadar')||'{}');if(AP[s.org])S.org=s.org;if(AP[s.dst])S.dst=s.dst;}catch(e){}
 function save(){try{localStorage.setItem('aegeanRadar',JSON.stringify({org:S.org,dst:S.dst}))}catch(e){}}
 const edgeOn=e=>(e.a3&&S.showA3)||([...e.al].some(a=>a!=='A3')&&S.showST);
@@ -446,6 +451,7 @@ function updatePlan(recompute){
   $('hudSel').innerHTML=`Origem <b>${S.org}</b> · Destino <b>${S.dst}</b> · próximo clique: <b>${pickNext==='org'?'origem':'destino'}</b>`;
   const ro=REG[RI[o.r]],rd=REG[RI[d.r]];
   $('pairlbl').innerHTML=`<span class="rdot" style="background:${ro.c}"></span><b>${ro.n}</b> ↔ <span class="rdot" style="background:${rd.c}"></span><b>${rd.n}</b> · ${S.ow?'só ida':'ida e volta'}`;
+  S.cleared=false;
   if(recompute){S.paths=S.org===S.dst?[]:findPaths(S.org,S.dst,S.stops);S.selPath=0}
   renderPrice();
   renderResults();
@@ -542,7 +548,7 @@ const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim
 const C={};function cols(){['--a3','--star','--hl','--land','--landedge','--bg','--fg','--muted','--line'].forEach(k=>C[k]=css(k))}
 
 function activeSets(){
-  const sel=S.paths[S.selPath]; const pathSet=new Set(sel?sel.segs:[]);
+  const sel=S.cleared?null:S.paths[S.selPath]; const pathSet=new Set(sel?sel.segs:[]);
   const focus=new Set([S.org]); return {pathSet,focus,sel};
 }
 let planes=[];
@@ -567,8 +573,8 @@ function draw(){
   if(hoverC){ctx.beginPath();gpath(hoverC);ctx.strokeStyle='rgba(255,255,255,.7)';ctx.lineWidth=1.2/k;ctx.stroke()}
   const {pathSet,sel}=activeSets();
   const pairOn=S.pair; const inPair=e=>pairOn&&((AP[e.a].r===pairOn[0]&&AP[e.b].r===pairOn[1])||(AP[e.a].r===pairOn[1]&&AP[e.b].r===pairOn[0]));
-  const F=S.focus&&AP[S.focus]?S.focus:S.org;
-  const reach=new Set(ADJ[F].filter(edgeOn).map(e=>other(e,F)));
+  const F=S.cleared?null:(S.focus&&AP[S.focus]?S.focus:S.org);
+  const reach=new Set(F?ADJ[F].filter(edgeOn).map(e=>other(e,F)):[]);
   const touchesOrg=e=>e.a===F||e.b===F;
   // base routes
   const hlAl=S.alHL?$('alSel').value:null;
@@ -593,13 +599,13 @@ function draw(){
       ctx.fillStyle=e.a3&&S.showA3?C['--a3']:C['--star'];
       ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(-4,-3.6);ctx.lineTo(-2,0);ctx.lineTo(-4,3.6);ctx.closePath();ctx.fill();ctx.restore()}}
   // airports
-  $('hudCount').innerHTML=`<b>${F}</b> ${AP[F].n}: ${reach.size} destinos diretos (anel branco) · `+(window.hudBase?hudBase():'');
+  $('hudCount').innerHTML=(F?`<b>${F}</b> ${AP[F].n}: ${reach.size} destinos diretos (anel branco) · `:'Nada selecionado: clique num aeroporto · ')+(window.hudBase?hudBase():'');
   const pathNodes=new Set(sel?sel.nodes:[]);
   const visible=new Set();for(const e of EDGES.values())if(edgeOn(e)){visible.add(e.a);visible.add(e.b)}
   for(const a of Object.values(AP)){
     const p=proj([a.lon,a.lat]);if(!p)continue;const reg=REG[RI[a.r]];
     const dimmed=pairOn&&!(a.r===pairOn[0]||a.r===pairOn[1]);
-    const isEnd=a.c===S.org||a.c===S.dst, inP=pathNodes.has(a.c);
+    const isEnd=!S.cleared&&(a.c===S.org||a.c===S.dst), inP=pathNodes.has(a.c);
     const isR=reach.has(a.c), isF=a.c===F;
     const r=(isEnd||isF?5.5:inP?4.2:isR?3.6:a.c==='ATH'?3:visible.has(a.c)?2.2:1.7)/k;
     ctx.globalAlpha=dimmed?.15:(isEnd||inP||isR||isF?1:(visible.has(a.c)?.45:.35));
@@ -648,6 +654,7 @@ cv.addEventListener('mouseleave',()=>{$('tip').hidden=true;hoverC=null;draw()});
 cv.addEventListener('click',ev=>{const r=cv.getBoundingClientRect();let a=nearest(ev.clientX-r.left,ev.clientY-r.top);
   if(!a&&hoverC){const c=CBY[hoverC.properties.name];if(c&&c.ap.length){S.dst=c.ap[0][0];syncInputs();updatePlan(true);return}}
   if(!a)return;
+  if(S.cleared)pickNext='org';
   S.focus=a.c;
   if(pickNext==='org'){S.org=a.c;pickNext='dst';renderSpots();renderCountries()}else{if(a.c===S.org){draw();return}S.dst=a.c;pickNext='org'}
   syncInputs();updatePlan(true)});
@@ -682,6 +689,14 @@ const alCount=a=>[...EDGES.values()].filter(e=>e.al.has(a)).length;
 $('alSel').innerHTML=Object.keys(ALC).filter(a=>alCount(a)).sort((a,b)=>(b==='A3')-(a==='A3')||AL[a].localeCompare(AL[b])).map(a=>`<option value="${a}">${AL[a]} (${a}) · ${alCount(a)} rotas</option>`).join('');
 $('alSel').onchange=()=>renderNet();
 $('alMap').onclick=()=>{S.alHL=!S.alHL;$('alMap').setAttribute('aria-pressed',S.alHL);draw()};
+function clearMap(){
+  S.cleared=true;S.focus=null;S.pair=null;S.alHL=false;$('alMap').setAttribute('aria-pressed','false');
+  S.base=null;pickNext='org';hoverC=null;$('tip').hidden=true;
+  rebuildScale();renderChart();renderCountries();
+  $('hudSel').innerHTML=`Origem <b>${S.org}</b> · Destino <b>${S.dst}</b> · próximo clique: <b>origem</b>`;
+  d3.select(cv).transition().duration(400).call(zoom.transform,d3.zoomIdentity);draw();
+}
+$('clearSel').onclick=clearMap;$('clearSel2').onclick=clearMap;
 cols();syncInputs();rebuildScale();renderCountries();renderChart();renderNet();renderSpots();
 new ResizeObserver(resize).observe($('mapbox'));
 updatePlan(true);requestAnimationFrame(tick);
