@@ -326,7 +326,7 @@ try{const s=JSON.parse(localStorage.getItem('aegeanRadar')||'{}');if(AP[s.org])S
 function save(){try{localStorage.setItem('aegeanRadar',JSON.stringify({org:S.org,dst:S.dst}))}catch(e){}}
 const edgeOn=e=>(e.a3&&S.showA3)||([...e.al].some(a=>a!=='A3')&&S.showST);
 const fmt=n=>n==null?'—':n.toLocaleString('pt-BR');
-function baseR(){return S.base||AP[S.org].r}
+function baseR(){return (S.base&&S.baseFor===S.org)?S.base:AP[S.org].r}
 function owFrom(base,r,cab){const p=rt(base,r);return p&&p.v[cab]!=null?p.v[cab]/2:null}
 let priceScale=null;
 function rebuildScale(){const vals=REG.map(r=>owFrom(baseR(),r.k,S.cab)).filter(v=>v!=null);
@@ -351,7 +351,7 @@ function findPaths(o,d,maxStops){
   out.sort((x,y)=>x.score-y.score);
   return out.slice(0,25);
 }
-function priceFor(o,d){ return rt(o===S.org?baseR():AP[o].r,AP[d].r) }
+function priceFor(o,d){ return rt(AP[o].r,AP[d].r) }
 
 // ---------- UI planner ----------
 const $=id=>document.getElementById(id);
@@ -369,7 +369,7 @@ function updatePlan(recompute){
   syncBase();
   const o=AP[S.org],d=AP[S.dst];
   $('hudSel').innerHTML=`Origem <b>${S.org}</b> · Destino <b>${S.dst}</b>`;
-  const ro=REG[RI[baseR()]],rd=REG[RI[d.r]];
+  const ro=REG[RI[o.r]],rd=REG[RI[d.r]];
   $('pairlbl').innerHTML=`<span class="rdot" style="background:${ro.c}"></span><b>${ro.n}</b> ↔ <span class="rdot" style="background:${rd.c}"></span><b>${rd.n}</b> · ${S.ow?'só ida':'ida e volta'}`;
   const p=priceFor(S.org,S.dst); const div=S.ow?2:1;
   const names=['Y Econômica','C Executiva','F Primeira'];
@@ -563,10 +563,9 @@ function renderCountries(){
 $('cr').innerHTML+=REG.map(r=>`<option value="${r.k}">${r.n}</option>`).join('');
 $('cq').addEventListener('input',renderCountries);$('cr').addEventListener('change',renderCountries);
 
-let lastOrgR=null;
-function syncBase(){const r=AP[S.org].r;if(r!==lastOrgR){S.base=r;lastOrgR=r}$('baseSel').value=baseR();$('cabSel').value=S.cab;rebuildScale();renderChart();renderCountries()}
+function syncBase(){$('baseSel').value=baseR();$('cabSel').value=S.cab;rebuildScale();renderChart();renderCountries()}
 $('baseSel').innerHTML=REG.filter(r=>r.k!=='HI').map(r=>`<option value="${r.k}">${r.n}</option>`).join('');
-$('baseSel').onchange=e=>{S.base=e.target.value;updatePlan(false)};
+$('baseSel').onchange=e=>{S.base=e.target.value;S.baseFor=S.org;updatePlan(false)};
 $('cabSel').onchange=e=>{S.cab=+e.target.value;document.querySelectorAll('[data-cab]').forEach(x=>x.setAttribute('aria-pressed',+x.dataset.cab===S.cab));updatePlan(false)};
 $('mPrice').onclick=()=>{S.priceMode=true;setPressed($('mPrice'),$('mReg'),true);rebuildScale();draw()};
 $('mReg').onclick=()=>{S.priceMode=false;setPressed($('mPrice'),$('mReg'),false);rebuildScale();draw()};
