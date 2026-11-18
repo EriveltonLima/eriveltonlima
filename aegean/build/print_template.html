@@ -26,17 +26,18 @@ td small{color:#3a4a5e}
 .tt{font-weight:700;font-size:9pt;margin-bottom:1mm}
 </style></head><body>
 <div class="page">
-<header><div><h1>Regiões <span>Aegean Miles+Bonus</span></h1><div class="sub">Cada país pintado na cor da sua região de preço · aeroportos principais por sigla IATA · valores de resgate só ida (OW)</div></div>
+<header><div><h1>Regiões <span>Aegean Miles+Bonus</span> · <span id="cabt"></span></h1><div class="sub">Cada país pintado na cor da sua região de preço · aeroportos principais por sigla IATA · valores de resgate só ida (OW) na classe indicada</div></div>
 <div class="sub" style="text-align:right">Fonte: tabela e lista oficial "Geographic Regions" da Aegean<br>Ida e volta (RT) = o dobro do valor só ida</div></header>
 <svg id="map"></svg>
 <div class="bottom">
   <div><div class="tt">Regiões</div><div class="legend" id="legend"></div></div>
-  <div class="tablebox"><div class="tt">Milhas por trecho só ida — Y Econômica / C Executiva / F Primeira</div><table id="tab"></table>
-  <div class="rules"><div><b>Com conexão vale só a região de origem e a de destino final:</b> POA → PTY → IST = América Central &amp; Sul ↔ Europa = 40.000 (Y). POA → PTY = 12.500 (Y).</div>
+  <div class="tablebox"><div class="tt" id="tabt"></div><table id="tab"></table>
+  <div class="rules"><div><b>Com conexão vale só a região de origem e a de destino final:</b> POA → PTY → IST = América Central &amp; Sul ↔ Europa = <span id="ex1"></span>. POA → PTY = <span id="ex2"></span>.</div>
   <div>Europa ↔ Europa não tem Primeira (F). Havaí é região própria, sem valores publicados na tabela. Rússia-Sibéria conta como Ásia Central (o mapa pinta a Rússia inteira como Europa).</div></div></div>
 </div></div>
 <script src="D3SRC"></script><script src="TOPOSRC"></script>
 <script>
+const CAB=/*CAB*/0, CABN=['Econômica (Y)','Executiva (C)','Primeira (F)'][CAB];
 const WORLD=/*WORLD*/null, COUNTRIES=/*COUNTRIES*/[];
 const REG=[
  {k:'EU',n:'Europa & Norte da África',c:'#a9cbf2',inc:'Europa, Turquia, Rússia, Cáucaso, Chipre; Egito, Marrocos, Argélia, Tunísia, Líbia, Sudão e Israel'},
@@ -60,10 +61,11 @@ const f=n=>n==null?'—':(n*500).toLocaleString('pt-BR');
 document.getElementById('legend').innerHTML=REG.map(r=>`<div class="leg"><i style="background:${r.c}"></i><div><b>${r.n}</b><br><span>${r.inc}</span></div></div>`).join('');
 // table
 const R8=REG.filter(r=>r.k!=='HI');
-const all=[];R8.forEach(a=>R8.forEach(b=>all.push(rt(a.k,b.k)[0])));const mn=Math.min(...all),mx=Math.max(...all);
+document.getElementById('cabt').textContent=CABN;document.getElementById('tabt').textContent='Milhas por trecho na '+CABN+' — só ida (OW) em destaque, ida e volta (RT) embaixo';
+const all=[];R8.forEach(a=>R8.forEach(b=>{const v=rt(a.k,b.k)[CAB];if(v!=null)all.push(v)}));const mn=Math.min(...all),mx=Math.max(...all);
 const heat=v=>d3.interpolateRgbBasis(['#e3f5ec','#fbf1c7','#fbd9cf'])((v-mn)/(mx-mn));
 let h='<tr><th></th>'+R8.map(r=>`<th><span class="sw" style="background:${r.c}"></span><br>${r.n}</th>`).join('')+'</tr>';
-R8.forEach(a=>{h+=`<tr><th class="rh"><span class="sw" style="background:${a.c}"></span>${a.n}</th>`+R8.map(b=>{const v=rt(a.k,b.k);return `<td style="background:${heat(v[0])}"><b>${f(v[0])}</b><br><small>${f(v[1])} · ${f(v[2])}</small></td>`}).join('')+'</tr>'});
+R8.forEach(a=>{h+=`<tr><th class="rh"><span class="sw" style="background:${a.c}"></span>${a.n}</th>`+R8.map(b=>{const v=rt(a.k,b.k)[CAB];return v==null?`<td style="background:#f1f3f6"><b>—</b><br><small>sem ${CAB===2?'Primeira':'valor'}</small></td>`:`<td style="background:${heat(v)}"><b style="font-size:8.6pt">${f(v)}</b><br><small>RT ${(v*1000).toLocaleString('pt-BR')}</small></td>`}).join('')+'</tr>'});
 document.getElementById('tab').innerHTML=h;
 // map
 const svg=d3.select('#map');const W=svg.node().clientWidth,H=svg.node().clientHeight;svg.attr('viewBox',`0 0 ${W} ${H}`);
@@ -86,5 +88,6 @@ for(const a of aps){const p=proj([a.lon,a.lat]);if(!p)continue;
   const lx=p[0]+2.4,ly=p[1]+2.2,w=a.code.length*4.3,hh=6;
   if(placed.some(q=>lx<q.x+q.w&&lx+w>q.x&&ly-hh<q.y&&ly>q.y-hh))continue;placed.push({x:lx,y:ly,w});
   G.append('text').attr('x',lx).attr('y',ly).attr('font-size',a.main?6.4:5.6).attr('font-family','JetBrains Mono, monospace').attr('font-weight',a.main?700:500).attr('fill','#14233a').attr('paint-order','stroke').attr('stroke','#fff').attr('stroke-width',1.6).text(a.code)}
+document.getElementById('ex1').textContent=f(rt('SA','EU')[CAB]);document.getElementById('ex2').textContent=f(rt('SA','SA')[CAB]);
 window.READY=true;
 </script></body></html>
