@@ -28,7 +28,6 @@ Finlândia,Europa & Norte da África,EU,HEL,Helsinque,60.32,24.96
 França,Europa & Norte da África,EU,CDG,Paris,49.01,2.55
 França,Europa & Norte da África,EU,NCE,Nice,43.66,7.21
 Geórgia,Europa & Norte da África,EU,TBS,Tbilisi,41.67,44.95
-Groenlândia,Europa & Norte da África,EU,SFJ,Kangerlussuaq,67.01,-50.69
 Grécia,Europa & Norte da África,EU,ATH,Atenas,37.94,23.94
 Grécia,Europa & Norte da África,EU,SKG,Tessalônica,40.52,22.97
 Grécia,Europa & Norte da África,EU,HER,Heraklion (Creta),35.34,25.18
@@ -65,6 +64,7 @@ Romênia,Europa & Norte da África,EU,OTP,Bucareste,44.57,26.09
 Rússia,Europa & Norte da África,EU,SVO,Moscou,55.97,37.41
 Rússia,Europa & Norte da África,EU,LED,São Petersburgo,59.8,30.26
 Saara Ocidental,Europa & Norte da África,EU,EUN,Laayoune,27.15,-13.22
+Sudão,Europa & Norte da África,EU,KRT,Cartum,15.59,32.55
 Suécia,Europa & Norte da África,EU,ARN,Estocolmo,59.65,17.92
 Suíça,Europa & Norte da África,EU,ZRH,Zurique,47.46,8.55
 Suíça,Europa & Norte da África,EU,GVA,Genebra,46.24,6.11
@@ -135,7 +135,6 @@ Serra Leoa,África Central & Sul,AF,FNA,Freetown,8.62,-13.2
 Seychelles,África Central & Sul,AF,SEZ,Mahé,-4.67,55.52
 Somalilândia,África Central & Sul,AF,HGA,Hargeisa,9.52,44.09
 Somália,África Central & Sul,AF,MGQ,Mogadíscio,2.01,45.3
-Sudão,África Central & Sul,AF,KRT,Cartum,15.59,32.55
 Sudão do Sul,África Central & Sul,AF,JUB,Juba,4.87,31.6
 Tanzânia,África Central & Sul,AF,DAR,Dar es Salaam,-6.88,39.2
 Tanzânia,África Central & Sul,AF,ZNZ,Zanzibar,-6.22,39.22
@@ -198,9 +197,11 @@ Nova Zelândia,Oceania,OC,CHC,Christchurch,-43.49,172.53
 Papua-Nova Guiné,Oceania,OC,POM,Port Moresby,-9.44,147.22
 Polinésia Francesa,Oceania,OC,PPT,Papeete,-17.55,-149.61
 Vanuatu,Oceania,OC,VLI,Port Vila,-17.7,168.32
+Bahamas,América do Norte,NA,NAS,Nassau,25.04,-77.47
 Canadá,América do Norte,NA,YYZ,Toronto,43.68,-79.63
 Canadá,América do Norte,NA,YUL,Montreal,45.47,-73.74
 Canadá,América do Norte,NA,YVR,Vancouver,49.19,-123.18
+Cuba,América do Norte,NA,HAV,Havana,22.99,-82.41
 Estados Unidos,América do Norte,NA,JFK,Nova York JFK,40.64,-73.78
 Estados Unidos,América do Norte,NA,EWR,Newark,40.69,-74.17
 Estados Unidos,América do Norte,NA,IAD,Washington,38.95,-77.46
@@ -211,9 +212,17 @@ Estados Unidos,América do Norte,NA,LAX,Los Angeles,33.94,-118.41
 Estados Unidos,América do Norte,NA,SFO,São Francisco,37.62,-122.38
 Estados Unidos,América do Norte,NA,DEN,Denver,39.86,-104.67
 Estados Unidos,América do Norte,NA,BOS,Boston,42.36,-71.01
+Groenlândia,América do Norte,NA,SFJ,Kangerlussuaq,67.01,-50.69
+Haiti,América do Norte,NA,PAP,Porto Príncipe,18.58,-72.29
+Jamaica,América do Norte,NA,MBJ,Montego Bay,18.5,-77.91
+Jamaica,América do Norte,NA,KIN,Kingston,17.94,-76.79
+México,América do Norte,NA,MEX,Cidade do México,19.44,-99.07
+México,América do Norte,NA,CUN,Cancún,21.04,-86.87
+Porto Rico,América do Norte,NA,SJU,San Juan,18.44,-66.0
+Rep. Dominicana,América do Norte,NA,PUJ,Punta Cana,18.57,-68.36
+Rep. Dominicana,América do Norte,NA,SDQ,Santo Domingo,18.43,-69.67
 Argentina,América Central & Sul,SA,EZE,Buenos Aires,-34.82,-58.54
 Argentina,América Central & Sul,SA,COR,Córdoba,-31.32,-64.21
-Bahamas,América Central & Sul,SA,NAS,Nassau,25.04,-77.47
 Belize,América Central & Sul,SA,BZE,Belize City,17.54,-88.31
 Bolívia,América Central & Sul,SA,VVI,Santa Cruz,-17.64,-63.14
 Bolívia,América Central & Sul,SA,LPB,La Paz,-16.51,-68.19
@@ -229,28 +238,19 @@ Colômbia,América Central & Sul,SA,BOG,Bogotá,4.7,-74.15
 Colômbia,América Central & Sul,SA,MDE,Medellín,6.16,-75.42
 Costa Rica,América Central & Sul,SA,SJO,San José,9.99,-84.2
 Costa Rica,América Central & Sul,SA,LIR,Liberia,10.59,-85.54
-Cuba,América Central & Sul,SA,HAV,Havana,22.99,-82.41
 El Salvador,América Central & Sul,SA,SAL,San Salvador,13.44,-89.06
 Equador,América Central & Sul,SA,UIO,Quito,-0.13,-78.36
 Equador,América Central & Sul,SA,GYE,Guayaquil,-2.16,-79.88
 Guatemala,América Central & Sul,SA,GUA,Cidade da Guatemala,14.58,-90.53
 Guiana,América Central & Sul,SA,GEO,Georgetown,6.5,-58.25
-Haiti,América Central & Sul,SA,PAP,Porto Príncipe,18.58,-72.29
 Honduras,América Central & Sul,SA,SAP,San Pedro Sula,15.45,-87.92
 Honduras,América Central & Sul,SA,XPL,Tegucigalpa,14.38,-87.62
 Ilhas Malvinas,América Central & Sul,SA,MPN,Mount Pleasant,-51.82,-58.45
-Jamaica,América Central & Sul,SA,MBJ,Montego Bay,18.5,-77.91
-Jamaica,América Central & Sul,SA,KIN,Kingston,17.94,-76.79
-México,América Central & Sul,SA,MEX,Cidade do México,19.44,-99.07
-México,América Central & Sul,SA,CUN,Cancún,21.04,-86.87
 Nicarágua,América Central & Sul,SA,MGA,Manágua,12.14,-86.17
 Panamá,América Central & Sul,SA,PTY,Cidade do Panamá,9.07,-79.38
 Paraguai,América Central & Sul,SA,ASU,Assunção,-25.24,-57.52
 Peru,América Central & Sul,SA,LIM,Lima,-12.02,-77.11
 Peru,América Central & Sul,SA,CUZ,Cusco,-13.54,-71.94
-Porto Rico,América Central & Sul,SA,SJU,San Juan,18.44,-66.0
-Rep. Dominicana,América Central & Sul,SA,PUJ,Punta Cana,18.57,-68.36
-Rep. Dominicana,América Central & Sul,SA,SDQ,Santo Domingo,18.43,-69.67
 Suriname,América Central & Sul,SA,PBM,Paramaribo,5.45,-55.19
 Trinidad e Tobago,América Central & Sul,SA,POS,Port of Spain,10.6,-61.34
 Uruguai,América Central & Sul,SA,MVD,Montevidéu,-34.84,-56.03
