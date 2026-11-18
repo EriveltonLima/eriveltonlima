@@ -5,7 +5,7 @@ from countries import C
 REGN={'EU':'Europa & Norte da África','ME':'Oriente Médio','AF':'África Central & Sul','NC':'Oriente Próximo & Ásia Central','FE':'Extremo Oriente','OC':'Oceania','NA':'América do Norte','SA':'América Central & Sul','HI':'Havaí'}
 data=[{'en':en,'pt':pt,'r':r,'ap':[list(a) for a in ap]} for en,pt,r,ap in C]
 s=open(os.path.join(here,'template.html')).read()
-s=s.replace('/*WORLD*/null',open(os.path.join(here,'countries-110m.json')).read()).replace('/*COUNTRIES*/[]',json.dumps(data,ensure_ascii=False,separators=(',',':')))
+s=s.replace('/*WORLD*/null',open(os.path.join(here,'countries-110m.json')).read()).replace('/*LOGOS*/{}',open(os.path.join(here,'logos.json')).read()).replace('/*COUNTRIES*/[]',json.dumps(data,ensure_ascii=False,separators=(',',':')))
 open(os.path.join(here,'..','index.html'),'w').write(s)
 with open(os.path.join(here,'..','paises_aeroportos.csv'),'w',newline='') as f:
     w=csv.writer(f); w.writerow(['País','Região Aegean','Código região','Aeroporto (IATA)','Cidade','Latitude','Longitude'])

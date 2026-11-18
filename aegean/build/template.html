@@ -74,6 +74,8 @@ input{text-transform:uppercase}
 .res .path{font-family:var(--f-mono);font-size:13.5px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
 .res .meta{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 12px}
 .alb{display:inline-flex;align-items:center;gap:4px;font-family:var(--f-mono);font-size:11px;font-weight:600;padding:1px 6px;border-radius:4px;line-height:1.5;white-space:nowrap}
+.alb.lg{background:#fff;color:#111;padding:1px 6px 1px 2px;font-family:var(--f-body);font-weight:600;font-size:11px}
+.alb.lg img{width:18px;height:18px;display:block}
 .alb small{font-family:var(--f-body);font-weight:500;font-size:10.5px}
 .al{font-family:var(--f-mono);font-size:11px;padding:1px 6px;border-radius:4px;border:1px solid var(--line)}
 .al.a3{border-color:var(--a3);color:var(--a3)}
@@ -218,7 +220,7 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
     <section class="card" aria-labelledby="neth">
       <div class="cardhead"><h2 id="neth">Voos por companhia</h2><span class="note" id="netcount"></span></div>
       <div class="ctrls"><label for="alSel" style="text-transform:none;letter-spacing:0;font-size:12.5px;display:flex;gap:6px;align-items:center">Companhia <select id="alSel" style="width:auto"></select></label>
-      <button class="chip" id="alMap" aria-pressed="false">Destacar no mapa</button></div>
+      <span id="alLogo"></span><button class="chip" id="alMap" aria-pressed="false">Destacar no mapa</button></div>
       <p class="note">Rotas da rede de exemplo de cada companhia, agrupadas por hub. Clique numa rota para abrir no planejador.</p>
       <div class="netlist" id="netlist"></div>
     </section>
@@ -295,7 +297,11 @@ const AL = {A3:'Aegean',OA:'Olympic (Aegean)',CM:'Copa',AV:'Avianca',TK:'Turkish
 const ALC={A3:['#0b3d91','#f2c14e'],CM:['#0032a0','#fff'],AV:['#d8232a','#fff'],TK:['#c8102e','#fff'],LH:['#05164d','#ffad00'],LX:['#e2001a','#fff'],OS:['#d81e05','#fff'],SN:['#0b2a5b','#e30613'],
  TP:['#00a651','#fff'],UA:['#005daa','#fff'],AC:['#d22630','#fff'],ET:['#078930','#fcdd09'],MS:['#00265c','#c8a24a'],SA:['#003b6f','#f2a900'],LO:['#11397e','#fff'],SK:['#0a1e46','#fff'],
  NH:['#13448f','#fff'],SQ:['#00266b','#f99f1c'],NZ:['#111111','#fff'],CA:['#e30613','#fff'],OZ:['#8e2c48','#fff'],TG:['#4e2a84','#e6b4ff'],AI:['#c8102e','#fff'],BR:['#00703c','#f5c400']};
-const alb=(a,full)=>{const c=ALC[a]||['#334','#fff'];return `<span class="alb" style="background:${c[0]};color:${c[1]}" title="${AL[a]||a}">${a}${full?` <small>${AL[a]||''}</small>`:''}</span>`};
+const LOGOS=/*LOGOS*/{};
+const LIMG={};for(const [a,v] of Object.entries(LOGOS)){const im=new Image();im.onload=()=>{if(typeof draw==='function')draw()};im.src=v.icon.src;LIMG[a]=im}
+const alb=(a,full)=>{const c=ALC[a]||['#334','#fff'];const lg=LOGOS[a];
+  if(lg) return `<span class="alb lg" title="${AL[a]||a}"><img src="${lg.icon.src}" alt="${AL[a]||a}"><span style="color:${c[0]==='#111111'?'#111':c[0]}">${full?(AL[a]||a):a}</span></span>`;
+  return `<span class="alb" style="background:${c[0]};color:${c[1]}" title="${AL[a]||a}">${a}${full?` <small>${AL[a]||''}</small>`:''}</span>`};
 const RAWR = {
  A3:{ATH:'SKG HER RHO CFU JTR JMK CHQ LCA IST LHR CDG FRA MUC ZRH VIE FCO MXP BCN MAD LIS AMS BRU CPH ARN BER WAW BUD OTP SOF BEG TIA TBS EVN CAI TUN CMN TLV BEY AMM RUH JED KWI EBL',
      SKG:'LHR CDG FRA MUC LCA HER RHO VIE ZRH', LCA:'HER RHO SKG BEY TLV AMM', HER:'LHR MUC'},
@@ -502,7 +508,7 @@ function renderSpots(){
   $('spots').querySelectorAll('.spot').forEach(b=>b.onclick=()=>{S.dst=b.dataset.c;syncInputs();updatePlan(true);$('mapbox').scrollIntoView({behavior:'smooth',block:'center'})});
 }
 function renderNet(){
-  const al=$('alSel').value;
+  const al=$('alSel').value; $('alLogo').innerHTML=alb(al,true);
   const es=[...EDGES.values()].filter(e=>e.al.has(al));
   // hub = aeroporto de onde a companhia mais voa
   const deg={};es.forEach(e=>{deg[e.a]=(deg[e.a]||0)+1;deg[e.b]=(deg[e.b]||0)+1});
@@ -616,10 +622,11 @@ function draw(){
     ctx.fillStyle=C['--muted'];ctx.font='500 10px "IBM Plex Sans", sans-serif';ctx.fillText(t2,x,by+28);ctx.textAlign='left'}
   // selos das companhias no itinerário selecionado (por cima de tudo)
   if(sel){    for(const e of sel.segs){const als=[...e.al].sort((x,y)=>(y==='A3')-(x==='A3'));const a=als[0];const m=proj(d3.geoInterpolate([AP[e.a].lon,AP[e.a].lat],[AP[e.b].lon,AP[e.b].lat])(.5));if(!m)continue;
-      const c=ALC[a]||['#334','#fff'];const txt=a+' '+(AL[a]||'')+(als.length>1?' +'+(als.length-1):'');
-      ctx.save();ctx.translate(m[0]*k+T.x,m[1]*k+T.y);ctx.font='600 11px "IBM Plex Mono", monospace';const w=ctx.measureText(txt).width+12;
-      ctx.fillStyle=c[0];ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(-w/2,-10,w,20,5);ctx.fill();ctx.stroke();
-      ctx.fillStyle=c[1];ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,0,1);ctx.restore()}}
+      const c=ALC[a]||['#334','#fff'];const txt=(AL[a]||a)+(als.length>1?' +'+(als.length-1):'');const im=LIMG[a];const hasI=im&&im.complete&&im.naturalWidth;
+      ctx.save();ctx.translate(m[0]*k+T.x,m[1]*k+T.y);ctx.font='600 11px "IBM Plex Sans", sans-serif';const w=ctx.measureText(txt).width+(hasI?30:12);
+      ctx.fillStyle=hasI?'#ffffff':c[0];ctx.strokeStyle=hasI?c[0]:'rgba(255,255,255,.85)';ctx.lineWidth=1.2;ctx.beginPath();ctx.roundRect(-w/2,-11,w,22,6);ctx.fill();ctx.stroke();
+      if(hasI)ctx.drawImage(im,-w/2+4,-9,18,18);
+      ctx.fillStyle=hasI?(c[0]==='#111111'?'#111':c[0]):c[1];ctx.textAlign=hasI?'left':'center';ctx.textBaseline='middle';ctx.fillText(txt,hasI?-w/2+26:0,1);ctx.restore()}}
 }
 let last=0;function tick(ts){if(S.anim&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const dt=Math.min(50,ts-last||16);for(const p of planes){p.t+=p.sp*dt/16*(1500/Math.max(800,p.e.km))*2;if(p.t>1){p.t=0;const es=[...EDGES.values()];p.e=es[Math.floor(Math.random()*es.length)];p.dir=Math.random()<.5}}draw()}last=ts;requestAnimationFrame(tick)}
 
