@@ -96,10 +96,10 @@ table.chart td.sel{border-color:#fff;box-shadow:0 0 0 1px #fff}
 ul.rules{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--muted);font-size:13px}
 ul.rules b{color:var(--fg);font-weight:500}
 .spots{display:grid;gap:4px}
-.spot{display:grid;grid-template-columns:3.2em minmax(0,1fr) auto auto 5.6em;gap:10px;align-items:center;padding:6px 8px;border-radius:6px;background:var(--panel2);cursor:pointer;border:1px solid transparent;color:var(--fg);font:inherit;text-align:left;width:100%}
+.spot{display:grid;grid-template-columns:3.2em minmax(0,1fr) auto auto 6.4em;gap:10px;align-items:center;padding:6px 8px;border-radius:6px;background:var(--panel2);cursor:pointer;border:1px solid transparent;color:var(--fg);font:inherit;text-align:left;width:100%}
 .spot:hover{border-color:var(--line)}
 .spot .c{font-family:var(--f-mono);font-weight:600}
-.spot .r{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spot .r{font-size:12px;color:var(--muted);line-height:1.4;min-width:0}
 .spot .m{font-family:var(--f-mono);font-size:12.5px}
 .spot .e{font-family:var(--f-mono);font-size:12px;color:var(--hl);text-align:right}
 .spot .k{font-family:var(--f-mono);font-size:12px;color:var(--muted);text-align:right}
@@ -107,7 +107,7 @@ ul.rules b{color:var(--fg);font-weight:500}
 .spot .m{text-align:right}
 .spot.head{background:none;cursor:default;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);padding-block:2px}
 .spot.head span:nth-child(n+3){text-align:right}
-@media (max-width:520px){.spot{grid-template-columns:3em minmax(0,1fr) auto auto}.spot .r,.spot.head span:nth-child(2){display:none}}
+@media (max-width:520px){.spot{grid-template-columns:3em minmax(0,1fr) auto}.spot .k,.spot.head span:nth-child(3),.spot .e,.spot.head span:nth-child(5){display:none}}
 .netlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
 .netlist button{background:var(--panel2);border:1px solid var(--line);color:var(--fg);border-radius:6px;padding:6px 8px;text-align:left;font:inherit;font-size:12.5px;cursor:pointer;display:flex;justify-content:space-between;gap:6px}
 .netlist button .c{font-family:var(--f-mono);color:var(--a3);font-weight:600}
@@ -204,7 +204,7 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
       <div class="cardhead">
         <h2 id="sph">Melhores rotas a partir de <span class="mono" id="spOrg">POA</span></h2>
       </div>
-      <p class="note">Destinos alcançáveis com no máximo 1 conexão, sempre pelo itinerário mais barato. Conexão numa terceira região cobra cada trecho separado. A distância é a reta entre a origem e o destino (ponto A → ponto B), sem contar o desvio da conexão. "Rende" = km de A→B a cada 1.000 milhas gastas (classe escolhida, só ida): quanto maior, melhor.</p>
+      <p class="note">Uma linha por região: o menor preço para chegar lá saindo do seu aeroporto e, entre os destinos com esse preço, o mais distante. Até 2 conexões, sempre pelo itinerário mais barato (conexão numa terceira região cobra cada trecho separado). Distância em linha reta do ponto A ao ponto B, classe escolhida, só ida.</p>
       <div class="spots" id="spots"></div>
     </section>
   </div>
@@ -347,7 +347,20 @@ for(const [al,hubs] of Object.entries(RAWR)) for(const [h,list] of Object.entrie
   let e=EDGES.get(key); if(!e){e={a,b,al:new Set(),a3:false,km:hav(AP[a],AP[b])};EDGES.set(key,e)}
   e.al.add(al); if(al==='A3') e.a3=true;
 }
-function hav(p,q){const R=6371,t=Math.PI/180,dl=(q.lat-p.lat)*t,dn=(q.lon-p.lon)*t;const x=Math.sin(dl/2)**2+Math.cos(p.lat*t)*Math.cos(q.lat*t)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
+// Distância geodésica no elipsoide WGS84 (fórmula de Vincenty), em km; cai para a esfera se não convergir
+function hav(p,q){
+  const a=6378137,f=1/298.257223563,b=a*(1-f),t=Math.PI/180;
+  const L=(q.lon-p.lon)*t,U1=Math.atan((1-f)*Math.tan(p.lat*t)),U2=Math.atan((1-f)*Math.tan(q.lat*t));
+  const sU1=Math.sin(U1),cU1=Math.cos(U1),sU2=Math.sin(U2),cU2=Math.cos(U2);
+  let l=L,lp,it=0,sS,cS,sg,sA,c2A,c2m;
+  do{const sl=Math.sin(l),cl=Math.cos(l);sS=Math.sqrt((cU2*sl)**2+(cU1*sU2-sU1*cU2*cl)**2);if(sS===0)return 0;
+    cS=sU1*sU2+cU1*cU2*cl;sg=Math.atan2(sS,cS);sA=cU1*cU2*sl/sS;c2A=1-sA*sA;c2m=c2A?cS-2*sU1*sU2/c2A:0;
+    const C=f/16*c2A*(4+f*(4-3*c2A));lp=l;l=L+(1-C)*f*sA*(sg+C*sS*(c2m+C*cS*(-1+2*c2m*c2m)));}while(Math.abs(l-lp)>1e-12&&++it<200);
+  if(it>=200){const dl=(q.lat-p.lat)*t,dn=(q.lon-p.lon)*t;const x=Math.sin(dl/2)**2+Math.cos(p.lat*t)*Math.cos(q.lat*t)*Math.sin(dn/2)**2;return 2*6371.0088*Math.asin(Math.sqrt(x))}
+  const u2=c2A*(a*a-b*b)/(b*b),A=1+u2/16384*(4096+u2*(-768+u2*(320-175*u2))),B=u2/1024*(256+u2*(-128+u2*(74-47*u2)));
+  const dS=B*sS*(c2m+B/4*(cS*(-1+2*c2m*c2m)-B/6*c2m*(-3+4*sS*sS)*(-3+4*c2m*c2m)));
+  return b*A*(sg-dS)/1000;
+}
 const ADJ={}; for(const c in AP) ADJ[c]=[];
 for(const e of EDGES.values()){ADJ[e.a].push(e);ADJ[e.b].push(e)}
 const other=(e,c)=>e.a===c?e.b:e.a;
@@ -440,7 +453,7 @@ function renderResults(){
   box.innerHTML=S.paths.map((pt,i)=>{const y=pt.price&&pt.price.v[S.cab]!=null?pt.price.v[S.cab]/div:null;
     const path=pt.nodes.map((n,j)=>{let s=`<span>${n}</span>`;if(j<pt.segs.length){const e=pt.segs[j];const als=[...e.al];const vk=[e.a,e.b].join('-');s+=` <span class="arrow">→</span> `+(VIA[vk]?`<span class="al st" title="escala técnica">escala ${VIA[vk]}</span> `:'')+als.slice(0,3).map(a=>`<span class="al ${a==='A3'?'a3':'st'}" title="${AL[a]}">${a}</span>`).join(' ')+(als.length>3?`<span class="al st">+${als.length-3}</span>`:'')+` <span class="arrow">→</span>`}return s}).join(' ');
     const stops=pt.nodes.length-2;
-    return `<button class="res${i===S.selPath?' sel':''}" data-i="${i}"><div class="path">${path}</div><div class="meta"><span>${stops===0?'Direto':stops+' conexão'+(stops>1?'ões':'')}</span><span class="mono">${S.org}→${S.dst} ${fmt(Math.round(hav(AP[S.org],AP[S.dst])/10)*10)} km · voado ${fmt(Math.round(pt.km/10)*10)} km</span>${y?`<span class="mono">${fmt(y)} mi ${['Y','C','F'][S.cab]}</span><span class="mono">rende ${fmt(Math.round(hav(AP[S.org],AP[S.dst])/(y/1000)))} km/1k</span>`:''}${pt.price&&pt.price.split?`<span style="color:var(--warn)">mais caro: conexão em outra região (${pt.price.via.join(', ')})</span>`:''}${pt.a3?`<span style="color:var(--a3)">${pt.a3} trecho(s) Aegean</span>`:''}${stops>1?'<span style="color:var(--warn)">confirmar regra</span>':''}</div></button>`}).join('');
+    return `<button class="res${i===S.selPath?' sel':''}" data-i="${i}"><div class="path">${path}</div><div class="meta"><span>${stops===0?'Direto':stops+' conexão'+(stops>1?'ões':'')}</span><span class="mono">${S.org}→${S.dst} ${fmt(Math.round(hav(AP[S.org],AP[S.dst])/10)*10)} km · voado ${fmt(Math.round(pt.km/10)*10)} km</span>${y?`<span class="mono">${fmt(y)} mi ${['Y','C','F'][S.cab]}</span><span class="mono">${fmt(Math.round(hav(AP[S.org],AP[S.dst])/(y/1000)))} km por 1.000 mi</span>`:''}${pt.price&&pt.price.split?`<span style="color:var(--warn)">mais caro: conexão em outra região (${pt.price.via.join(', ')})</span>`:''}${pt.a3?`<span style="color:var(--a3)">${pt.a3} trecho(s) Aegean</span>`:''}${stops>1?'<span style="color:var(--warn)">confirmar regra</span>':''}</div></button>`}).join('');
   box.querySelectorAll('.res').forEach(b=>b.onclick=()=>{S.selPath=+b.dataset.i;renderPrice();renderResults();draw()});
 }
 
@@ -467,11 +480,13 @@ $('ttRT').onclick=()=>{S.tOW=false;setPressed($('ttOW'),$('ttRT'),false);renderC
 function renderSpots(){
   $('spOrg').textContent=S.org;
   const best={};
-  for(const c in AP){ if(c===S.org) continue; const ps=findPaths(S.org,c,1); if(!ps.length) continue;
+  for(const c in AP){ if(c===S.org) continue; const ps=findPaths(S.org,c,2); if(!ps.length) continue;
     const pb=ps[0]; if(!pb.price||pb.price.v[S.cab]==null) continue; const y=pb.price.v[S.cab]/2; const dk=hav(AP[S.org],AP[c]);
     best[c]={c,dk,flown:pb.km,y,split:pb.price.split,eff:dk/(y/1000),via:pb.nodes.length>2?pb.nodes[1]:null}; }
-  const list=Object.values(best).sort((a,b)=>b.eff-a.eff).slice(0,14);
-  $('spots').innerHTML=list.length?`<div class="spot head"><span>Destino</span><span></span><span>Distância A→B</span><span>Milhas</span><span>Rende</span></div>`+list.map(s=>{const a=AP[s.c];return `<button class="spot" data-c="${s.c}"><span class="c" style="color:${REG[RI[a.r]].c}">${s.c}</span><span class="r">${a.n}${s.via?' · via '+s.via:' · direto'}${s.split?' <span style="color:var(--warn)">· cobrado em 2 partes</span>':''}</span><span class="k">${S.org}→${s.c} <b>${fmt(Math.round(s.dk/10)*10)} km</b></span><span class="m">${fmt(s.y)} mi</span><span class="e">${fmt(Math.round(s.eff))} km/1k</span></button>`}).join(''):`<p class="empty">${!S.showST&&!ADJ[S.org].some(e=>e.a3)?`A Aegean não voa a partir de ${S.org}: ligue a camada de parceiros ou escolha uma origem da rede Aegean.`:'Sem destinos com as camadas ativas.'}</p>`;
+  // Por região: o menor preço para chegar lá e, entre os destinos com esse preço, o mais distante (A→B)
+  const byR={};for(const x of Object.values(best)){const r=AP[x.c].r;(byR[r]=byR[r]||[]).push(x)}
+  const list=Object.entries(byR).map(([r,xs])=>{const mn=Math.min(...xs.map(x=>x.y));const c=xs.filter(x=>x.y===mn).sort((a,b)=>b.dk-a.dk);return {...c[0],r,alt:c.slice(1,4)}}).sort((a,b)=>a.y-b.y||b.dk-a.dk);
+  $('spots').innerHTML=list.length?`<div class="spot head"><span>Região</span><span>Destino mais longe pelo menor preço</span><span>Distância A→B</span><span>Milhas</span><span>km por 1.000 mi</span></div>`+list.map(s=>{const a=AP[s.c];const R=REG[RI[s.r]];return `<button class="spot" data-c="${s.c}"><span class="c" style="color:${R.c}">${s.c}</span><span class="r"><b style="color:var(--fg);font-weight:500">${R.n}</b> · ${a.n}${s.via?' via '+s.via:' direto'}${s.split?' <span style="color:var(--warn)">· cobrado em 2 partes</span>':''}${s.alt.length?`<br><span style="color:var(--dim)">mesmo preço, mais perto: ${s.alt.map(x=>x.c+' '+fmt(Math.round(x.dk/10)*10)+' km').join(' · ')}</span>`:''}</span><span class="k">${S.org}→${s.c} <b>${fmt(Math.round(s.dk/10)*10)} km</b></span><span class="m">${fmt(s.y)} mi</span><span class="e">${fmt(Math.round(s.eff))}</span></button>`}).join(''):`<p class="empty">${!S.showST&&!ADJ[S.org].some(e=>e.a3)?`A Aegean não voa a partir de ${S.org}: ligue a camada de parceiros ou escolha uma origem da rede Aegean.`:'Sem destinos com as camadas ativas.'}</p>`;
   $('spots').querySelectorAll('.spot').forEach(b=>b.onclick=()=>{S.dst=b.dataset.c;syncInputs();updatePlan(true);$('mapbox').scrollIntoView({behavior:'smooth',block:'center'})});
 }
 function renderNet(){
