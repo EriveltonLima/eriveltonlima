@@ -34,7 +34,7 @@ C = [
 # --- América do Norte ---
 ("United States of America","Estados Unidos","NA",[("JFK","Nova York JFK",40.64,-73.78),("EWR","Newark",40.69,-74.17),("IAD","Washington",38.95,-77.46),("MIA","Miami",25.79,-80.29),("IAH","Houston",29.98,-95.34),("ORD","Chicago",41.97,-87.90),("LAX","Los Angeles",33.94,-118.41),("SFO","São Francisco",37.62,-122.38),("DEN","Denver",39.86,-104.67),("BOS","Boston",42.36,-71.01)]),
 ("Canada","Canadá","NA",[("YYZ","Toronto",43.68,-79.63),("YUL","Montreal",45.47,-73.74),("YVR","Vancouver",49.19,-123.18)]),
-("Greenland","Groenlândia","NA",[("SFJ","Kangerlussuaq",67.01,-50.69)]),
+("Greenland","Groenlândia","NA",[("GOH","Nuuk",64.19,-51.68)]),
 # --- Havaí (aeroporto; o estado fica no polígono dos EUA) ---
 ("__Hawaii","Havaí (EUA)","HI",[("HNL","Honolulu",21.32,-157.92),("OGG","Maui",20.90,-156.43)]),
 # --- Europa & Norte da África ---

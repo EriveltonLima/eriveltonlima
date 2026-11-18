@@ -84,7 +84,7 @@ input{text-transform:uppercase}
 .cardhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
 .tscroll{overflow-x:auto}
 table.chart{border-collapse:separate;border-spacing:3px;width:100%;min-width:640px}
-table.chart th{font-family:var(--f-display);font-weight:600;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:4px;vertical-align:bottom;line-height:1.1}
+table.chart th{font-family:var(--f-display);font-weight:600;font-size:11.5px;hyphens:auto;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:4px;vertical-align:bottom;line-height:1.1}
 table.chart th.rh{text-align:left;white-space:nowrap}
 table.chart th .dot,.rdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
 table.chart td{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:center;padding:7px 4px;border-radius:4px;font-size:13px;cursor:pointer;color:#06121c;font-weight:500;border:1px solid transparent}
@@ -198,7 +198,7 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
       <div class="cardhead">
         <h2 id="sph">Melhores rotas a partir de <span class="mono" id="spOrg">POA</span></h2>
       </div>
-      <p class="note">Destinos alcançáveis com no máximo 1 conexão, ordenados por quilômetros voados a cada 1.000 milhas (Econômica, só ida). Quanto maior, melhor o aproveitamento.</p>
+      <p class="note">Destinos alcançáveis com no máximo 1 conexão, ordenados por quilômetros voados a cada 1.000 milhas (classe escolhida, só ida). Quanto maior, melhor o aproveitamento.</p>
       <div class="spots" id="spots"></div>
     </section>
   </div>
@@ -233,7 +233,7 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
     <div class="tscroll" style="max-height:420px;overflow:auto"><table class="ctab" id="ctab"></table></div>
   </section>
 
-  <footer>A rede de rotas é um exemplo montado a partir de voos conhecidos de Aegean e parceiros Star Alliance (Copa, Turkish, Lufthansa, SWISS, TAP, United, Avianca, Ethiopian e outros). Voos sazonais e mudanças de malha acontecem: confira sempre a disponibilidade de assento-prêmio no site da Aegean. As regiões seguem a lista oficial de países da Aegean (Geographic Regions). Atenção a casos curiosos: Israel conta como Norte da África (zona Europa), México e Caribe como América do Norte, e Ilhas Canárias e Madeira como África Central & Sul.</footer>
+  <footer>A rede de rotas é um exemplo montado a partir de voos conhecidos de Aegean e parceiros Star Alliance (Copa, Turkish, Lufthansa, SWISS, TAP, United, Avianca, Ethiopian e outros). Voos sazonais e mudanças de malha acontecem: confira sempre a disponibilidade de assento-prêmio no site da Aegean. As regiões seguem a lista oficial de países da Aegean (Geographic Regions). A Sibéria conta como Ásia Central, mas o mapa pinta a Rússia inteira como Europa. Moscou, São Petersburgo, Kiev e Minsk aparecem sem rotas porque não há voos de parceiros Star Alliance para lá hoje. Asiana está em processo de fusão com a Korean Air e pode sair da Star Alliance. Atenção a casos curiosos: Israel conta como Norte da África (zona Europa), México e Caribe como América do Norte, e Ilhas Canárias e Madeira como África Central & Sul.</footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
@@ -307,6 +307,35 @@ const RAWR = {
  AI:{DEL:'LHR FRA CDG JFK EWR ORD SFO YYZ SYD MEL NRT SIN BKK', BOM:'LHR JFK SFO'},
  BR:{TPE:'JFK LAX SFO IAH YYZ ORD LHR CDG VIE BKK SIN HKG NRT ICN MNL KUL'},
 };
+
+// Rotas adicionais de parceiros para cobrir os hubs de cada país (rede de exemplo)
+const EXTRA = {
+ A3:{ATH:'DUS GVA PRG NCE MAN'},
+ CM:{PTY:'MEX CUN HAV PUJ SDQ MBJ KIN SJU NAS POS GUA SAL SAP XPL MGA UIO GYE MDE ASU VVI GEO PBM COR LIR BOS DEN'},
+ AV:{BOG:'MDE UIO GYE MEX CUN GUA SAL HAV PUJ', SAL:'GUA IAD LAX JFK'},
+ UA:{EWR:'MEX CUN SJU DUB MAN KEF PRG NCE GVA OPO BOS DEN', IAH:'MEX CUN BZE', ORD:'DEN BOS DUB', SFO:'DEN BOS OGG PPT', LAX:'OGG', DEN:'OGG'},
+ AC:{YYZ:'YVR MEX CUN PUJ HAV DUB', YVR:'HND SYD OGG YUL', YUL:'CUN PUJ'},
+ LH:{FRA:'LJU DBV DUB MAN OSL HEL TLL RIX VNO KRK PRG ZAG SJJ KEF NCE GVA OPO MLA DEN BOS MEX CUN LOS ABV LAD ADD DXB', MUC:'DUB OSL HEL KRK PRG ZAG NCE OPO MLA LUX DUS DEN BOS YVR MEX CUN'},
+ LX:{ZRH:'DUB MAN OSL HEL PRG KRK ZAG PRN KEF NCE OPO MLA BOS CUN PUJ DXB MCT'},
+ OS:{VIE:'SJJ TGD PRN SKP RMO ZAG GYD'},
+ LO:{WAW:'TLL RIX VNO RMO KRK GYD'},
+ SK:{CPH:'OSL HEL KEF ARN', OSL:'ARN HEL EWR'},
+ TP:{LIS:'OXB OPO FNC REC SID DSS BJL MPM RAK ALG BOS'},
+ TK:{IST:'DUB MAN OSL HEL PRG KRK ZAG SJJ TGD PRN SKP RMO GYD TLL RIX VNO MLA NCE GVA OPO DUS ECN AYT MJI RAK BGW IKA AUH MCT JIB MGQ EBB KGL DAR ZNZ FIH LBV DLA NDJ ABV NIM COO ABJ OUA BKO NKC DSS CKY FNA MPM MRU SEZ KHI ISB DAC MLE NQZ ASB DYU FRU CAN KIX SGN HAN CGK BOS DEN MEX CUN HAV'},
+ ET:{ADD:'EBB KGL DAR ZNZ FIH BZV LBV DLA NDJ ABV NIM COO LFW ABJ OUA BKO DSS BJL CKY FNA ROB LUN LLW MPM HRE VFA GBE WDH TNR MRU SEZ JIB MGQ HGA JUB MBA BJM SSG CAN'},
+ MS:{CAI:'HRG EBB KGL DAR FIH ABJ MCT AUH BGW TUN ALG CMN CAN'},
+ SA:{JNB:'MPM HRE VFA LUN LLW GBE WDH MRU DAR FIH NBO'},
+ AI:{DEL:'KTM DAC CMB'},
+ NH:{HND:'CGK SGN HAN MNL BKK YVR', NRT:'MEX HAN CGK MNL KUL BKK'},
+ SQ:{SIN:'CGK DPS SGN HAN PNH RGN CAN KIX MLE DAC KTM CMB HKT MAN CHC'},
+ CA:{PEK:'KIX UBN HAN CGK PNH VTE KHI ISB'},
+ TG:{BKK:'HKT SGN HAN PNH VTE RGN CGK DPS DAC KHI CMB KIX CAN MNL OSL BRU MXP IST'},
+ BR:{TPE:'KIX SGN HAN CGK DPS PNH'},
+ NZ:{AKL:'CHC NAN NOU PPT'},
+};
+for(const [al,hubs] of Object.entries(EXTRA)){RAWR[al]=RAWR[al]||{};for(const [h,l] of Object.entries(hubs))RAWR[al][h]=((RAWR[al][h]||'')+' '+l).trim()}
+// Voos com escala técnica (mesmo número de voo, não são diretos)
+const VIA={'IST-SYD':'KUL','IST-MEL':'SIN','EZE-IST':'GRU','IST-PTY':'BOG','EWR-SIN':null};
 const EDGES=new Map(); // "AAA-BBB" (ordenado) -> {a,b,al:Set,a3:bool,km}
 for(const [al,hubs] of Object.entries(RAWR)) for(const [h,list] of Object.entries(hubs)) for(const d of list.split(/\s+/)){
   if(!AP[h]||!AP[d]||h===d) continue;
@@ -320,6 +349,7 @@ for(const e of EDGES.values()){ADJ[e.a].push(e);ADJ[e.b].push(e)}
 const other=(e,c)=>e.a===c?e.b:e.a;
 
 // ---------- Estado ----------
+let pickNext='dst';
 const S={base:null,priceMode:true,org:'POA',dst:'IST',ow:true,stops:1,cab:0,tOW:true,showA3:true,showST:true,anim:true,pair:null,paths:[],selPath:0};
 try{const s=JSON.parse(localStorage.getItem('aegeanRadar')||'{}');if(AP[s.org])S.org=s.org;if(AP[s.dst])S.dst=s.dst;}catch(e){}
 function save(){try{localStorage.setItem('aegeanRadar',JSON.stringify({org:S.org,dst:S.dst}))}catch(e){}}
@@ -367,14 +397,14 @@ function updatePlan(recompute){
   save();
   syncBase();
   const o=AP[S.org],d=AP[S.dst];
-  $('hudSel').innerHTML=`Origem <b>${S.org}</b> · Destino <b>${S.dst}</b>`;
+  $('hudSel').innerHTML=`Origem <b>${S.org}</b> · Destino <b>${S.dst}</b> · próximo clique: <b>${pickNext==='org'?'origem':'destino'}</b>`;
   const ro=REG[RI[o.r]],rd=REG[RI[d.r]];
   $('pairlbl').innerHTML=`<span class="rdot" style="background:${ro.c}"></span><b>${ro.n}</b> ↔ <span class="rdot" style="background:${rd.c}"></span><b>${rd.n}</b> · ${S.ow?'só ida':'ida e volta'}`;
   const p=priceFor(S.org,S.dst); const div=S.ow?2:1;
   const names=['Y Econômica','C Executiva','F Primeira'];
   $('price').innerHTML=names.map((n,i)=>{const v=p&&p.v[i]!=null?p.v[i]/div:null;return `<div class="pbox${i===S.cab?' on':''}"><div class="k">${n}</div><div class="v">${v==null?'—':fmt(v)}</div></div>`}).join('');
   $('pricenote').innerHTML = !p ? 'Sem preço publicado para este par de regiões (Havaí).' :
-    (S.org===S.dst?'Origem e destino iguais.':`Preço pela região de origem e destino final; a conexão não muda o valor.${S.ow?' Só ida = 50% da tabela.':''}`);
+    (S.org===S.dst?'Origem e destino iguais.':`Preço pela região de origem e destino final; a conexão não muda o valor.${S.ow?' Só ida = 50% da tabela.':''}`)+(baseR()!==o.r?` <b>O mapa está colorido a partir de ${REG[RI[baseR()]].n}</b> (região base escolhida à mão); este preço usa a origem ${S.org}.`:'');
   if(recompute){S.paths=S.org===S.dst?[]:findPaths(S.org,S.dst,S.stops);S.selPath=0}
   renderResults();
   draw();
@@ -382,11 +412,11 @@ function updatePlan(recompute){
 function renderResults(){
   const box=$('results');
   if(!S.paths.length){box.innerHTML=`<p class="empty">Nenhum itinerário com as camadas e conexões escolhidas. Tente permitir mais conexões ou ligar as duas camadas.</p>`;return}
-  const p=priceFor(S.org,S.dst),div=S.ow?2:1, y=p&&p.v[0]!=null?p.v[0]/div:null;
+  const p=priceFor(S.org,S.dst),div=S.ow?2:1, y=p&&p.v[S.cab]!=null?p.v[S.cab]/div:null;
   box.innerHTML=S.paths.map((pt,i)=>{
-    const path=pt.nodes.map((n,j)=>{let s=`<span>${n}</span>`;if(j<pt.segs.length){const e=pt.segs[j];const als=[...e.al];s+=` <span class="arrow">→</span> `+als.slice(0,3).map(a=>`<span class="al ${a==='A3'?'a3':'st'}" title="${AL[a]}">${a}</span>`).join(' ')+(als.length>3?`<span class="al st">+${als.length-3}</span>`:'')+` <span class="arrow">→</span>`}return s}).join(' ');
+    const path=pt.nodes.map((n,j)=>{let s=`<span>${n}</span>`;if(j<pt.segs.length){const e=pt.segs[j];const als=[...e.al];const vk=[e.a,e.b].join('-');s+=` <span class="arrow">→</span> `+(VIA[vk]?`<span class="al st" title="escala técnica">escala ${VIA[vk]}</span> `:'')+als.slice(0,3).map(a=>`<span class="al ${a==='A3'?'a3':'st'}" title="${AL[a]}">${a}</span>`).join(' ')+(als.length>3?`<span class="al st">+${als.length-3}</span>`:'')+` <span class="arrow">→</span>`}return s}).join(' ');
     const stops=pt.nodes.length-2;
-    return `<button class="res${i===S.selPath?' sel':''}" data-i="${i}"><div class="path">${path}</div><div class="meta"><span>${stops===0?'Direto':stops+' conexão'+(stops>1?'ões':'')}</span><span class="mono">${fmt(Math.round(pt.km))} km</span>${y?`<span class="mono">${fmt(y)} mi Y</span><span class="mono">${Math.round(pt.km/(y/1000))} km/1k mi</span>`:''}${pt.a3?`<span style="color:var(--a3)">${pt.a3} trecho(s) Aegean</span>`:''}${stops>1?'<span style="color:var(--warn)">confirmar regra</span>':''}</div></button>`}).join('');
+    return `<button class="res${i===S.selPath?' sel':''}" data-i="${i}"><div class="path">${path}</div><div class="meta"><span>${stops===0?'Direto':stops+' conexão'+(stops>1?'ões':'')}</span><span class="mono">${fmt(Math.round(pt.km))} km</span>${y?`<span class="mono">${fmt(y)} mi ${['Y','C','F'][S.cab]}</span><span class="mono">${Math.round(pt.km/(y/1000))} km/1k mi</span>`:''}${pt.a3?`<span style="color:var(--a3)">${pt.a3} trecho(s) Aegean</span>`:''}${stops>1?'<span style="color:var(--warn)">confirmar regra</span>':''}</div></button>`}).join('');
   box.querySelectorAll('.res').forEach(b=>b.onclick=()=>{S.selPath=+b.dataset.i;renderResults();draw()});
 }
 
@@ -405,7 +435,7 @@ function renderChart(){
   T.innerHTML=h+'</tbody>';
   T.querySelectorAll('td[data-a]').forEach(td=>td.onclick=()=>{const k=[td.dataset.a,td.dataset.b];S.pair=S.pair&&S.pair[0]===k[0]&&S.pair[1]===k[1]?null:k;renderChart();draw();$('mapbox').scrollIntoView({behavior:'smooth',block:'center'})});
 }
-document.querySelectorAll('[data-cab]').forEach(b=>b.onclick=()=>{S.cab=+b.dataset.cab;document.querySelectorAll('[data-cab]').forEach(x=>x.setAttribute('aria-pressed',x===b));updatePlan(false)});
+document.querySelectorAll('[data-cab]').forEach(b=>b.onclick=()=>{S.cab=+b.dataset.cab;document.querySelectorAll('[data-cab]').forEach(x=>x.setAttribute('aria-pressed',x===b));updatePlan(false);renderSpots()});
 $('ttOW').onclick=()=>{S.tOW=true;setPressed($('ttOW'),$('ttRT'),true);renderChart()};
 $('ttRT').onclick=()=>{S.tOW=false;setPressed($('ttOW'),$('ttRT'),false);renderChart()};
 
@@ -414,10 +444,10 @@ function renderSpots(){
   $('spOrg').textContent=S.org;
   const best={};
   for(const c in AP){ if(c===S.org) continue; const ps=findPaths(S.org,c,1); if(!ps.length) continue;
-    const p=priceFor(S.org,c); if(!p||p.v[0]==null) continue; const y=p.v[0]/2;
+    const p=priceFor(S.org,c); if(!p||p.v[S.cab]==null) continue; const y=p.v[S.cab]/2;
     const km=ps[0].km; best[c]={c,km,y,eff:km/(y/1000),via:ps[0].nodes.length>2?ps[0].nodes[1]:null}; }
   const list=Object.values(best).sort((a,b)=>b.eff-a.eff).slice(0,14);
-  $('spots').innerHTML=list.length?list.map(s=>{const a=AP[s.c];return `<button class="spot" data-c="${s.c}"><span class="c" style="color:${REG[RI[a.r]].c}">${s.c}</span><span class="r">${a.n}${s.via?' · via '+s.via:' · direto'}</span><span class="m">${fmt(s.y)}</span><span class="e">${fmt(Math.round(s.eff))} km</span></button>`}).join(''):'<p class="empty">Sem destinos com as camadas ativas.</p>';
+  $('spots').innerHTML=list.length?list.map(s=>{const a=AP[s.c];return `<button class="spot" data-c="${s.c}"><span class="c" style="color:${REG[RI[a.r]].c}">${s.c}</span><span class="r">${a.n}${s.via?' · via '+s.via:' · direto'}</span><span class="m">${fmt(s.y)}</span><span class="e">${fmt(Math.round(s.eff))} km</span></button>`}).join(''):`<p class="empty">${!S.showST&&!ADJ[S.org].some(e=>e.a3)?`A Aegean não voa a partir de ${S.org}: ligue a camada de parceiros ou escolha uma origem da rede Aegean.`:'Sem destinos com as camadas ativas.'}</p>`;
   $('spots').querySelectorAll('.spot').forEach(b=>b.onclick=()=>{S.dst=b.dataset.c;syncInputs();updatePlan(true);$('mapbox').scrollIntoView({behavior:'smooth',block:'center'})});
 }
 function renderNet(){
@@ -524,7 +554,7 @@ let last=0;function tick(ts){if(S.anim&&!matchMedia('(prefers-reduced-motion: re
 
 // hit test
 function nearest(mx,my){let best=null,bd=1e9;for(const a of Object.values(AP)){const p=proj([a.lon,a.lat]);if(!p)continue;const x=p[0]*T.k+T.x,y=p[1]*T.k+T.y;const d=Math.hypot(x-mx,y-my);if(d<bd){bd=d;best=a}}return bd<12?best:null}
-let pickNext='dst';
+
 cv.addEventListener('mousemove',ev=>{const r=cv.getBoundingClientRect();const mx=ev.clientX-r.left,my=ev.clientY-r.top;const a=nearest(mx,my);const tip=$('tip');
   const ll=proj.invert([(mx-T.x)/T.k,(my-T.y)/T.k]);const f=ll?countries.find(f=>d3.geoContains(f,ll)):null;
   if(f!==hoverC){hoverC=f;if(!S.anim)draw()}
@@ -565,7 +595,7 @@ $('cq').addEventListener('input',renderCountries);$('cr').addEventListener('chan
 function syncBase(){$('baseSel').value=baseR();$('cabSel').value=S.cab;rebuildScale();renderChart();renderCountries()}
 $('baseSel').innerHTML=REG.filter(r=>r.k!=='HI').map(r=>`<option value="${r.k}">${r.n}</option>`).join('');
 $('baseSel').onchange=e=>{S.base=e.target.value;S.baseFor=S.org;updatePlan(false)};
-$('cabSel').onchange=e=>{S.cab=+e.target.value;document.querySelectorAll('[data-cab]').forEach(x=>x.setAttribute('aria-pressed',+x.dataset.cab===S.cab));updatePlan(false)};
+$('cabSel').onchange=e=>{S.cab=+e.target.value;document.querySelectorAll('[data-cab]').forEach(x=>x.setAttribute('aria-pressed',+x.dataset.cab===S.cab));updatePlan(false);renderSpots()};
 $('mPrice').onclick=()=>{S.priceMode=true;setPressed($('mPrice'),$('mReg'),true);rebuildScale();draw()};
 $('mReg').onclick=()=>{S.priceMode=false;setPressed($('mPrice'),$('mReg'),false);rebuildScale();draw()};
 cols();syncInputs();rebuildScale();renderCountries();renderChart();renderNet();renderSpots();
