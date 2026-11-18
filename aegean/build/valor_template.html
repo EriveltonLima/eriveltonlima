@@ -1,0 +1,71 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Executiva ou Econômica</title>
+<style>
+@page{size:420mm 297mm;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff;color:#14233a;font-family:Inter,"DejaVu Sans",sans-serif}
+.page{width:420mm;height:297mm;padding:10mm 11mm;display:grid;grid-template-rows:auto auto 1fr auto;gap:4mm}
+header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:.5mm solid #14233a;padding-bottom:2mm}
+h1{font-size:24pt;margin:0}
+h1 span{color:#1f5fae}
+.sub{font-size:9.5pt;color:#4a5b70;max-width:190mm}
+.keys{display:flex;gap:5mm;font-size:9pt;align-items:center;flex-wrap:wrap}
+.k{display:flex;gap:2mm;align-items:center}
+.k i{width:9mm;height:5mm;border-radius:1mm;display:block}
+.main{display:grid;grid-template-columns:1fr 128mm;gap:8mm;min-height:0}
+table.m{border-collapse:separate;border-spacing:1mm;width:100%;table-layout:fixed}
+.m th{font-size:7.6pt;text-transform:uppercase;letter-spacing:.03em;line-height:1.15;padding:1mm;vertical-align:bottom}
+.m th.rh{text-align:left;width:38mm;vertical-align:middle}
+.m td{border-radius:1.2mm;padding:1.6mm 1mm;text-align:center;font-family:"JetBrains Mono",monospace;font-size:7pt;line-height:1.35;color:#14233a}
+.m td .r{font-size:11pt;font-weight:800;font-family:Inter,sans-serif}
+.m td .v{font-size:6.6pt}
+.m td .t{font-size:6.2pt;font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-family:Inter,sans-serif}
+.sw{display:inline-block;width:3mm;height:3mm;margin-right:1.2mm;vertical-align:-.4mm;border-radius:.6mm}
+.side{display:grid;gap:5mm;align-content:start}
+.box h2{font-size:12pt;margin:0 0 2mm}
+.rk{display:grid;grid-template-columns:7mm 1fr auto;gap:1.2mm 2mm;font-size:8.4pt;align-items:baseline}
+.rk .n{font-weight:800;color:#1f5fae}
+.rk .x{font-family:"JetBrains Mono",monospace;font-size:7.6pt;color:#2b3b52;text-align:right}
+.rk .d{grid-column:2/4;font-size:7.2pt;color:#4a5b70;margin-top:-1mm}
+.how{font-size:8.4pt;color:#2b3b52;display:grid;gap:1.4mm}
+.how b{color:#14233a}
+footer{font-size:7.6pt;color:#4a5b70;border-top:.3mm solid #c9d2dc;padding-top:2mm}
+</style></head><body><div class="page">
+<header><div><h1>Executiva ou Econômica? <span>Aegean Miles+Bonus</span></h1>
+<div class="sub">Quanto a Executiva (C) custa a mais que a Econômica (Y) em cada par de regiões. Quanto menor o multiplicador, mais a Executiva compensa.</div></div>
+<div class="sub" style="text-align:right">Valores por trecho só ida (OW)<br>Fonte: tabela de regiões da Aegean</div></header>
+<div class="keys" id="keys"></div>
+<div class="main">
+ <div><table class="m" id="m"></table></div>
+ <div class="side">
+  <div class="box"><h2>Onde a Executiva mais compensa</h2><div class="rk" id="best"></div></div>
+  <div class="box"><h2>Onde ficar na Econômica</h2><div class="rk" id="worst"></div></div>
+  <div class="box how"><h2>Como ler</h2>
+   <div><b>Multiplicador = Executiva ÷ Econômica.</b> 1,38× quer dizer que a Executiva custa só 38% a mais.</div>
+   <div><b>"+ milhas"</b> é o que você paga a mais, por trecho só ida, para ir de Executiva.</div>
+   <div>Voos longos pesam a favor da Executiva (cama, descanso). Num trecho dentro da mesma região, em geral curto, a Econômica tende a valer mais mesmo com multiplicador médio.</div>
+  </div>
+ </div>
+</div>
+<footer>Regra de preço: com conexão vale só a região de origem e a de destino final (POA → PTY → IST é cobrado como América Central &amp; Sul ↔ Europa). Ida e volta = o dobro. Havaí não tem valores publicados. Disponibilidade de assento-prêmio na Executiva costuma ser menor: confira no site da Aegean.</footer>
+</div>
+<script>
+const REG=[{k:'EU',n:'Europa & Norte da África',c:'#a9cbf2'},{k:'ME',n:'Oriente Médio',c:'#f6c48f'},{k:'AF',n:'África Central & Sul',c:'#eadf8c'},{k:'NC',n:'Oriente Próximo & Ásia Central',c:'#f1b3cc'},{k:'FE',n:'Extremo Oriente',c:'#f2a39c'},{k:'OC',n:'Oceania',c:'#99d9cf'},{k:'NA',n:'América do Norte',c:'#c9b5ef'},{k:'SA',n:'América Central & Sul',c:'#ade0a2'}];
+const RAW={EU:{EU:[30,50],ME:[40,60],AF:[80,110],NC:[70,110],FE:[90,130],OC:[100,150],NA:[70,110],SA:[80,110]},ME:{ME:[25,42],AF:[40,60],NC:[40,60],FE:[60,90],OC:[80,110],NA:[80,110],SA:[80,110]},AF:{AF:[25,42],NC:[60,90],FE:[80,110],OC:[80,110],NA:[80,110],SA:[60,90]},NC:{NC:[25,42],FE:[60,90],OC:[80,110],NA:[100,150],SA:[100,150]},FE:{FE:[35,65],OC:[80,110],NA:[100,150],SA:[100,150]},OC:{OC:[25,42],NA:[100,150],SA:[100,150]},NA:{NA:[25,42],SA:[60,90]},SA:{SA:[25,42]}};
+const rt=(a,b)=>(RAW[a]&&RAW[a][b])||RAW[b][a];
+const N=x=>(x*500).toLocaleString('pt-BR');
+const CLS=[{max:1.40,t:'Executiva vale muito',c:'#3fbf8a'},{max:1.60,t:'Executiva vale',c:'#9fe0bf'},{max:1.75,t:'Depende do voo',c:'#f7e3a1'},{max:9,t:'Fique na Econômica',c:'#f5b3a6'}];
+const cls=r=>CLS.find(c=>r<=c.max+1e-9);
+document.getElementById('keys').innerHTML=CLS.map(c=>`<div class="k"><i style="background:${c.c}"></i>${c.t} (${c.max<9?'até '+c.max.toFixed(2).replace('.',',')+'×':'acima de 1,75×'})</div>`).join('');
+let h='<tr><th></th>'+REG.map(r=>`<th><span class="sw" style="background:${r.c}"></span><br>${r.n}</th>`).join('')+'</tr>';
+const pairs=[];
+REG.forEach((a,i)=>{h+=`<tr><th class="rh"><span class="sw" style="background:${a.c}"></span>${a.n}</th>`;
+ REG.forEach((b,j)=>{const [y,c]=rt(a.k,b.k);const r=c/y;const k=cls(r);if(j>=i)pairs.push({a,b,y,c,r,same:a.k===b.k});
+  h+=`<td style="background:${k.c}"><div class="r">${r.toFixed(2).replace('.',',')}×</div><div class="v">Y ${N(y)} → C ${N(c)}</div><div class="v">+${N(c-y)} milhas</div></td>`});h+='</tr>'});
+document.getElementById('m').innerHTML=h;
+const row=(p,i)=>`<span class="n">${i+1}</span><span>${p.a.n} ↔ ${p.b.n}</span><span class="x">${p.r.toFixed(2).replace('.',',')}×</span><span class="d">Y ${N(p.y)} → C ${N(p.c)} · +${N(p.c-p.y)} milhas${p.same?' · dentro da região':''}</span>`;
+const best=pairs.filter(p=>!p.same).sort((x,y)=>x.r-y.r||y.y-x.y).slice(0,10);
+const worst=pairs.filter(p=>p.r>1.6).sort((x,y)=>y.r-x.r||x.y-y.y);
+document.getElementById('best').innerHTML=best.map(row).join('');
+document.getElementById('worst').innerHTML=worst.map(row).join('');
+window.READY=true;
+</script></body></html>
