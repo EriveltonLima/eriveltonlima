@@ -61,7 +61,7 @@ input{text-transform:uppercase}
 .seg button[aria-pressed="true"]{background:var(--a3);color:#04111d;font-weight:600}
 .ctrls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .btn{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:7px 12px;cursor:pointer;font-size:12.5px}
-.price{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.price{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .pbox{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
 .pbox .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
 .pbox .v{font-family:var(--f-mono);font-size:1.25rem;font-weight:600}
@@ -96,12 +96,18 @@ table.chart td.sel{border-color:#fff;box-shadow:0 0 0 1px #fff}
 ul.rules{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--muted);font-size:13px}
 ul.rules b{color:var(--fg);font-weight:500}
 .spots{display:grid;gap:4px}
-.spot{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:6px 8px;border-radius:6px;background:var(--panel2);cursor:pointer;border:1px solid transparent;color:var(--fg);font:inherit;text-align:left;width:100%}
+.spot{display:grid;grid-template-columns:3.2em minmax(0,1fr) auto auto 5.6em;gap:10px;align-items:center;padding:6px 8px;border-radius:6px;background:var(--panel2);cursor:pointer;border:1px solid transparent;color:var(--fg);font:inherit;text-align:left;width:100%}
 .spot:hover{border-color:var(--line)}
 .spot .c{font-family:var(--f-mono);font-weight:600}
 .spot .r{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .spot .m{font-family:var(--f-mono);font-size:12.5px}
-.spot .e{font-family:var(--f-mono);font-size:12px;color:var(--hl)}
+.spot .e{font-family:var(--f-mono);font-size:12px;color:var(--hl);text-align:right}
+.spot .k{font-family:var(--f-mono);font-size:12px;color:var(--muted);text-align:right}
+.spot .k b{color:var(--fg);font-weight:500}
+.spot .m{text-align:right}
+.spot.head{background:none;cursor:default;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);padding-block:2px}
+.spot.head span:nth-child(n+3){text-align:right}
+@media (max-width:520px){.spot{grid-template-columns:3em minmax(0,1fr) auto auto}.spot .r,.spot.head span:nth-child(2){display:none}}
 .netlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
 .netlist button{background:var(--panel2);border:1px solid var(--line);color:var(--fg);border-radius:6px;padding:6px 8px;text-align:left;font:inherit;font-size:12.5px;cursor:pointer;display:flex;justify-content:space-between;gap:6px}
 .netlist button .c{font-family:var(--f-mono);color:var(--a3);font-weight:600}
@@ -137,7 +143,7 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
       </div>
       <div class="basebar">
         <label for="baseSel">Região base<select id="baseSel"></select></label>
-        <label for="cabSel">Classe<select id="cabSel"><option value="0">Y Econômica</option><option value="1">C Executiva</option><option value="2">F Primeira</option></select></label>
+        <label for="cabSel">Classe<select id="cabSel"><option value="0">Y Econômica</option><option value="1">C Executiva</option></select></label>
         <div class="seg" role="group" aria-label="Cor do mapa"><button id="mPrice" aria-pressed="true">Cor por preço</button><button id="mReg" aria-pressed="false">Cor por região</button></div>
       </div>
       <div class="scale" id="scale"></div>
@@ -183,7 +189,7 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
         <h2 id="tblh">Tabela de custo por região</h2>
         <div class="ctrls">
           <div class="seg" role="group" aria-label="Classe">
-            <button data-cab="0" aria-pressed="true">Y Econômica</button><button data-cab="1" aria-pressed="false">C Executiva</button><button data-cab="2" aria-pressed="false">F Primeira</button>
+            <button data-cab="0" aria-pressed="true">Y Econômica</button><button data-cab="1" aria-pressed="false">C Executiva</button>
           </div>
           <div class="seg" role="group" aria-label="Tipo de valor da tabela">
             <button id="ttOW" aria-pressed="true">OW</button><button id="ttRT" aria-pressed="false">RT</button>
@@ -198,7 +204,7 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
       <div class="cardhead">
         <h2 id="sph">Melhores rotas a partir de <span class="mono" id="spOrg">POA</span></h2>
       </div>
-      <p class="note">Destinos alcançáveis com no máximo 1 conexão, ordenados por quilômetros voados a cada 1.000 milhas (classe escolhida, só ida). Quanto maior, melhor o aproveitamento.</p>
+      <p class="note">Destinos alcançáveis com no máximo 1 conexão. A distância é a reta entre a origem e o destino (ponto A → ponto B), sem contar o desvio da conexão. "Rende" = km de A→B a cada 1.000 milhas gastas (classe escolhida, só ida): quanto maior, melhor.</p>
       <div class="spots" id="spots"></div>
     </section>
   </div>
@@ -214,7 +220,7 @@ footer{color:var(--dim);font-size:12px;max-width:110ch}
       <ul class="rules">
         <li><b>Só ida = metade da ida e volta.</b> POA → PTY: América Central e do Sul ↔ mesma região = 25.000 RT, logo <b>12.500 OW</b> na Econômica.</li>
         <li><b>Com conexão, vale só a região de origem e a de destino final.</b> POA → PTY → IST cobra Central/Sul América ↔ Europa = 80.000 RT, logo <b>40.000 OW</b>. A região do ponto de conexão não entra no preço.</li>
-        <li><b>Europa ↔ Europa não tem Primeira (F)</b> na tabela; Havaí aparece sem preços publicados.</li>
+        <li>Havaí aparece sem preços publicados na tabela.</li>
         <li>Itinerários com 2 conexões são mostrados para referência; confirme no site da Aegean se o roteiro é aceito antes de transferir milhas.</li>
       </ul>
       <div style="display:grid;gap:6px">
@@ -401,7 +407,7 @@ function updatePlan(recompute){
   const ro=REG[RI[o.r]],rd=REG[RI[d.r]];
   $('pairlbl').innerHTML=`<span class="rdot" style="background:${ro.c}"></span><b>${ro.n}</b> ↔ <span class="rdot" style="background:${rd.c}"></span><b>${rd.n}</b> · ${S.ow?'só ida':'ida e volta'}`;
   const p=priceFor(S.org,S.dst); const div=S.ow?2:1;
-  const names=['Y Econômica','C Executiva','F Primeira'];
+  const names=['Y Econômica','C Executiva'];
   $('price').innerHTML=names.map((n,i)=>{const v=p&&p.v[i]!=null?p.v[i]/div:null;return `<div class="pbox${i===S.cab?' on':''}"><div class="k">${n}</div><div class="v">${v==null?'—':fmt(v)}</div></div>`}).join('');
   $('pricenote').innerHTML = !p ? 'Sem preço publicado para este par de regiões (Havaí).' :
     (S.org===S.dst?'Origem e destino iguais.':`Preço pela região de origem e destino final; a conexão não muda o valor.${S.ow?' Só ida = 50% da tabela.':''}`)+(baseR()!==o.r?` <b>O mapa está colorido a partir de ${REG[RI[baseR()]].n}</b> (região base escolhida à mão); este preço usa a origem ${S.org}.`:'');
@@ -416,7 +422,7 @@ function renderResults(){
   box.innerHTML=S.paths.map((pt,i)=>{
     const path=pt.nodes.map((n,j)=>{let s=`<span>${n}</span>`;if(j<pt.segs.length){const e=pt.segs[j];const als=[...e.al];const vk=[e.a,e.b].join('-');s+=` <span class="arrow">→</span> `+(VIA[vk]?`<span class="al st" title="escala técnica">escala ${VIA[vk]}</span> `:'')+als.slice(0,3).map(a=>`<span class="al ${a==='A3'?'a3':'st'}" title="${AL[a]}">${a}</span>`).join(' ')+(als.length>3?`<span class="al st">+${als.length-3}</span>`:'')+` <span class="arrow">→</span>`}return s}).join(' ');
     const stops=pt.nodes.length-2;
-    return `<button class="res${i===S.selPath?' sel':''}" data-i="${i}"><div class="path">${path}</div><div class="meta"><span>${stops===0?'Direto':stops+' conexão'+(stops>1?'ões':'')}</span><span class="mono">${fmt(Math.round(pt.km))} km</span>${y?`<span class="mono">${fmt(y)} mi ${['Y','C','F'][S.cab]}</span><span class="mono">${Math.round(pt.km/(y/1000))} km/1k mi</span>`:''}${pt.a3?`<span style="color:var(--a3)">${pt.a3} trecho(s) Aegean</span>`:''}${stops>1?'<span style="color:var(--warn)">confirmar regra</span>':''}</div></button>`}).join('');
+    return `<button class="res${i===S.selPath?' sel':''}" data-i="${i}"><div class="path">${path}</div><div class="meta"><span>${stops===0?'Direto':stops+' conexão'+(stops>1?'ões':'')}</span><span class="mono">${S.org}→${S.dst} ${fmt(Math.round(hav(AP[S.org],AP[S.dst])/10)*10)} km · voado ${fmt(Math.round(pt.km/10)*10)} km</span>${y?`<span class="mono">${fmt(y)} mi ${['Y','C','F'][S.cab]}</span><span class="mono">rende ${fmt(Math.round(hav(AP[S.org],AP[S.dst])/(y/1000)))} km/1k</span>`:''}${pt.a3?`<span style="color:var(--a3)">${pt.a3} trecho(s) Aegean</span>`:''}${stops>1?'<span style="color:var(--warn)">confirmar regra</span>':''}</div></button>`}).join('');
   box.querySelectorAll('.res').forEach(b=>b.onclick=()=>{S.selPath=+b.dataset.i;renderResults();draw()});
 }
 
@@ -445,9 +451,10 @@ function renderSpots(){
   const best={};
   for(const c in AP){ if(c===S.org) continue; const ps=findPaths(S.org,c,1); if(!ps.length) continue;
     const p=priceFor(S.org,c); if(!p||p.v[S.cab]==null) continue; const y=p.v[S.cab]/2;
-    const km=ps[0].km; best[c]={c,km,y,eff:km/(y/1000),via:ps[0].nodes.length>2?ps[0].nodes[1]:null}; }
+    const pb=ps.reduce((m,x)=>x.km<m.km?x:m); const dk=hav(AP[S.org],AP[c]);
+    best[c]={c,dk,flown:pb.km,y,eff:dk/(y/1000),via:pb.nodes.length>2?pb.nodes[1]:null}; }
   const list=Object.values(best).sort((a,b)=>b.eff-a.eff).slice(0,14);
-  $('spots').innerHTML=list.length?list.map(s=>{const a=AP[s.c];return `<button class="spot" data-c="${s.c}"><span class="c" style="color:${REG[RI[a.r]].c}">${s.c}</span><span class="r">${a.n}${s.via?' · via '+s.via:' · direto'}</span><span class="m">${fmt(s.y)}</span><span class="e">${fmt(Math.round(s.eff))} km</span></button>`}).join(''):`<p class="empty">${!S.showST&&!ADJ[S.org].some(e=>e.a3)?`A Aegean não voa a partir de ${S.org}: ligue a camada de parceiros ou escolha uma origem da rede Aegean.`:'Sem destinos com as camadas ativas.'}</p>`;
+  $('spots').innerHTML=list.length?`<div class="spot head"><span>Destino</span><span></span><span>Distância A→B</span><span>Milhas</span><span>Rende</span></div>`+list.map(s=>{const a=AP[s.c];return `<button class="spot" data-c="${s.c}"><span class="c" style="color:${REG[RI[a.r]].c}">${s.c}</span><span class="r">${a.n}${s.via?' · via '+s.via:' · direto'}</span><span class="k">${S.org}→${s.c} <b>${fmt(Math.round(s.dk/10)*10)} km</b></span><span class="m">${fmt(s.y)} mi</span><span class="e">${fmt(Math.round(s.eff))} km/1k</span></button>`}).join(''):`<p class="empty">${!S.showST&&!ADJ[S.org].some(e=>e.a3)?`A Aegean não voa a partir de ${S.org}: ligue a camada de parceiros ou escolha uma origem da rede Aegean.`:'Sem destinos com as camadas ativas.'}</p>`;
   $('spots').querySelectorAll('.spot').forEach(b=>b.onclick=()=>{S.dst=b.dataset.c;syncInputs();updatePlan(true);$('mapbox').scrollIntoView({behavior:'smooth',block:'center'})});
 }
 function renderNet(){
@@ -562,7 +569,7 @@ cv.addEventListener('mousemove',ev=>{const r=cv.getBoundingClientRect();const mx
   if(a){const n=ADJ[a.c].filter(edgeOn);const a3=n.filter(e=>e.a3).length;const p=priceFor(S.org,a.c);const y=p&&p.v[0]!=null?p.v[0]/2:null;
     html=`<b>${a.c}</b> ${a.n} · ${a.country}<br><span style="color:${REG[RI[a.r]].c}">${REG[RI[a.r]].n}</span><br>${n.length?n.length+' rotas na rede':'sem rota na rede de exemplo'}${a3?` · <span style="color:var(--a3)">${a3} Aegean</span>`:''}${y&&a.c!==S.org?`<br>De ${S.org}: <b>${fmt(y)}</b> mi Y só ida`:''}`}
   else if(f&&f.reg){const c=CBY[f.properties.name];const p=rt(baseR(),f.reg);const v=p?p.v.map(x=>x==null?'—':fmt(x/2)):null;
-    html=`<b>${f.pt}</b><br><span style="color:${REG[RI[f.reg]].c}">${REG[RI[f.reg]].n}</span>${c&&c.ap.length?`<br><span class="mono">${c.ap.map(x=>x[0]).join(' · ')}</span>`:''}${v?`<br>De ${REG[RI[baseR()]].n} (OW): Y <b>${v[0]}</b> · C <b>${v[1]}</b> · F <b>${v[2]}</b>`:'<br>Sem preço publicado'}`}
+    html=`<b>${f.pt}</b><br><span style="color:${REG[RI[f.reg]].c}">${REG[RI[f.reg]].n}</span>${c&&c.ap.length?`<br><span class="mono">${c.ap.map(x=>x[0]).join(' · ')}</span>`:''}${v?`<br>De ${REG[RI[baseR()]].n} (OW): Y <b>${v[0]}</b> · C <b>${v[1]}</b>`:'<br>Sem preço publicado'}`}
   if(!html){tip.hidden=true;return}
   tip.innerHTML=html;tip.hidden=false;let x=mx+14,yy=my+14;if(x>W-250)x-=264;if(yy>H-90)yy-=100;tip.style.left=x+'px';tip.style.top=yy+'px'});
 cv.addEventListener('mouseleave',()=>{$('tip').hidden=true;hoverC=null;draw()});
