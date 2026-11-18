@@ -77,7 +77,7 @@ footer a{color:var(--muted)}
  <header><div><h1>Radar <span>/*SHORT*/</span> Avios</h1><p class="sub" id="intro"></p></div>
   <div class="ctrls">
    <div class="seg" role="group" aria-label="Temporada"><button id="sOff" aria-pressed="true">Baixa temporada</button><button id="sPeak" aria-pressed="false">Alta temporada</button></div>
-   <div class="seg" role="group" aria-label="Classe"><button id="cY" aria-pressed="true">Econômica</button><button id="cC" aria-pressed="false">Executiva</button></div>
+   <div class="seg" role="group" aria-label="Classe" id="cabs"></div>
    <div class="seg" role="group" aria-label="Tipo"><button id="tOW" aria-pressed="true">Só ida</button><button id="tRT" aria-pressed="false">Ida e volta</button></div>
   </div></header>
  <div class="main">
@@ -94,14 +94,15 @@ footer a{color:var(--muted)}
    <p class="note" id="pnote"></p></aside>
  </div>
  <div class="grid2">
-  <section class="card"><div class="ctrls" style="justify-content:space-between"><h2>Tabela de preços (editável)</h2><button class="chip" id="reset">Restaurar valores da pesquisa</button></div>
+  <section class="card" style="grid-column:1/-1"><div class="ctrls" style="justify-content:space-between"><h2>Tabela de preços (editável)</h2><button class="chip" id="reset">Restaurar valores da pesquisa</button></div>
    <p class="note">Valores por trecho só ida. Corrija qualquer número com o valor oficial: o site recalcula tudo e guarda as suas alterações neste navegador.</p>
-   <div class="keys"><span><i style="border-color:#2f7d62"></i>visto em fonte</span><span><i style="border-color:var(--line);border-style:dashed"></i>estimado</span><span><i style="border-color:var(--acc2)"></i>alterado por você</span></div>
+   <div class="keys"><span><i style="border-color:#2f7d62"></i><span id="kS">visto em fonte</span></span><span id="kE"><i style="border-color:var(--line);border-style:dashed"></i>estimado</span><span><i style="border-color:var(--acc2)"></i>alterado por você</span></div>
    <div class="tscroll"><table class="pt" id="pt"></table></div>
    <p class="note" id="rule"></p><p class="note" id="peaknote"></p></section>
+  <section class="card" id="upcard" hidden><h2>Upgrades com Avios (por trajeto)</h2><p class="note">Valores oficiais para subir de classe pagando em Avios.</p><div class="tscroll"><table class="pt" id="upt"></table></div></section>
   <section class="card"><h2 id="rkh"></h2><p class="note">Destinos ordenados do menor para o maior preço na classe e temporada escolhidas. Distância em linha reta da origem ao destino.</p><div class="rk" id="rk"></div></section>
  </div>
- <footer><div><b>Atenção:</b> não existe tabela oficial completa publicada; os valores vêm de pesquisa em sites especializados (nov/2026) e podem estar desatualizados. Confirme sempre na calculadora oficial antes de transferir pontos. Taxas e sobretaxas não estão incluídas.</div><div id="src"></div></footer>
+ <footer><div id="disc"></div><div id="src"></div></footer>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
@@ -112,9 +113,11 @@ const fmt=n=>n==null?'—':Math.round(n).toLocaleString('pt-BR');
 const AP=Object.fromEntries(P.airports.map(a=>[a.c,a]));
 const HUB=P.hub;
 const SK='avios-'+P.key;
-const DEF=P.rows.map(r=>r[2].slice());
-let VAL=DEF.map(r=>r.slice());
-try{const s=JSON.parse(localStorage.getItem(SK)||'null');if(s&&s.length===VAL.length)VAL=s}catch(e){}
+const NC=P.cabins.length;
+const DEF=P.rows.map(r=>({off:r.off.slice(),peak:r.peak.slice()}));
+const cp=x=>x.map(r=>({off:r.off.slice(),peak:r.peak.slice()}));
+let VAL=cp(DEF);
+try{const s=JSON.parse(localStorage.getItem(SK+'-v2')||'null');if(s&&s.length===VAL.length)VAL=s}catch(e){}
 const S={peak:false,cab:0,ow:true,org:'GRU',dst:'ATH',focus:null,cleared:false,pick:'org'};
 try{const s=JSON.parse(localStorage.getItem(SK+'-od')||'null');if(s&&AP[s.o]&&AP[s.d]){S.org=s.o;S.dst=s.d}}catch(e){}
 if(!AP[S.org])S.org=P.spokes.includes('GRU')?'GRU':P.spokes[0];if(!AP[S.dst]||S.dst===S.org)S.dst=P.spokes.find(c=>c!==S.org);
@@ -124,21 +127,25 @@ function dist(p,q){const a=6378137,f=1/298.257223563,b=a*(1-f),t=Math.PI/180;con
  do{const sl=Math.sin(l),cl=Math.cos(l);sS=Math.sqrt((cU2*sl)**2+(cU1*sU2-sU1*cU2*cl)**2);if(sS===0)return 0;cS=sU1*sU2+cU1*cU2*cl;sg=Math.atan2(sS,cS);sA=cU1*cU2*sl/sS;c2A=1-sA*sA;c2m=c2A?cS-2*sU1*sU2/c2A:0;const C=f/16*c2A*(4+f*(4-3*c2A));lp=l;l=L+(1-C)*f*sA*(sg+C*sS*(c2m+C*cS*(-1+2*c2m*c2m)))}while(Math.abs(l-lp)>1e-12&&++it<200);
  const u2=c2A*(a*a-b*b)/(b*b),A=1+u2/16384*(4096+u2*(-768+u2*(320-175*u2))),B=u2/1024*(256+u2*(-128+u2*(74-47*u2)));const dS=B*sS*(c2m+B/4*(cS*(-1+2*c2m*c2m)-B/6*c2m*(-3+4*sS*sS)*(-3+4*c2m*c2m)));return b*A*(sg-dS)/1000}
 const MI=0.621371;
-const col=()=>S.cab*2+(S.peak?1:0);
+const val=r=>VAL[r][S.peak?'peak':'off'][S.cab];
 // preço de um trecho (sempre envolve o hub)
 function legRow(a,b){
-  if(P.mode==='zone'){const x=a===HUB?b:a;const z=P.zoneOf[x];return z?z-1:null}
-  const mi=dist(AP[a],AP[b])*MI;return P.rows.findIndex(r=>mi>=r[4][0]-0.5&&mi<=r[4][1]+0.999);
+  const x=a===HUB?b:a;
+  if(P.special&&P.special[x]!=null)return P.special[x];
+  const z=P.zoneOf[x];if(z)return z-1;
+  if(P.mode==='zone')return null;
+  const mi=dist(AP[a],AP[b])*MI;return P.rows.findIndex(r=>r.mi&&mi>=r.mi[0]-0.5&&mi<=r.mi[1]+0.999);
 }
 function legs(o,d){ if(o===d)return null; if(o===HUB||d===HUB) return [[o,d]]; return [[o,HUB],[HUB,d]] }
-function priceOD(o,d){const L=legs(o,d);if(!L)return null;const ls=L.map(([a,b])=>{const r=legRow(a,b);return {a,b,r,v:r==null||r<0?null:VAL[r][col()],km:dist(AP[a],AP[b])}});
+function priceOD(o,d){const L=legs(o,d);if(!L)return null;const ls=L.map(([a,b])=>{const r=legRow(a,b);return {a,b,r,v:r==null||r<0?null:val(r),km:dist(AP[a],AP[b])}});
   if(ls.some(x=>x.v==null))return {ls,total:null};const t=ls.reduce((s,x)=>s+x.v,0)*(S.ow?1:2);return {ls,total:t}}
 // ---------- controles ----------
 function press(a,b,on){a.setAttribute('aria-pressed',on);b.setAttribute('aria-pressed',!on)}
 $('sOff').onclick=()=>{S.peak=false;press($('sOff'),$('sPeak'),true);all()};$('sPeak').onclick=()=>{S.peak=true;press($('sOff'),$('sPeak'),false);all()};
-$('cY').onclick=()=>{S.cab=0;press($('cY'),$('cC'),true);all()};$('cC').onclick=()=>{S.cab=1;press($('cY'),$('cC'),false);all()};
+$('cabs').innerHTML=P.cabins.map((c,i)=>`<button data-c="${i}" aria-pressed="${i===0}">${c}</button>`).join('');
+$('cabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{S.cab=+b.dataset.c;$('cabs').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));all()});
 $('tOW').onclick=()=>{S.ow=true;press($('tOW'),$('tRT'),true);all()};$('tRT').onclick=()=>{S.ow=false;press($('tOW'),$('tRT'),false);all()};
-$('intro').textContent=P.intro;$('rule').innerHTML='<b>Regra de cálculo:</b> '+P.rule;$('peaknote').textContent=P.peakNote;
+$('intro').textContent=P.intro;if(P.mode==='distance'){$('kS').textContent='valor oficial';$('kE').hidden=true;$('reset').textContent='Restaurar valores oficiais'}$('disc').innerHTML=P.mode==='zone'?'<b>Atenção:</b> a Qatar não publica tabela completa; os valores vêm de pesquisa em sites especializados (nov/2026) e podem estar desatualizados. Confirme na calculadora oficial. Taxas e sobretaxas não incluídas.':'<b>Valores da tabela oficial da Iberia</b>, por trajeto. Taxas e sobretaxas não incluídas. Confirme a disponibilidade no site da Iberia.';$('rule').innerHTML='<b>Regra de cálculo:</b> '+P.rule;$('peaknote').textContent=P.peakNote;
 $('src').innerHTML='<b>Fontes da pesquisa:</b> '+P.sources.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(' · ');
 $('apl').innerHTML=P.airports.map(a=>`<option value="${a.c}">${a.n}, ${a.country}</option>`).join('');
 ['org','dst'].forEach(id=>$(id).addEventListener('input',e=>{const v=e.target.value.toUpperCase().trim();if(AP[v]){S[id]=v;S.focus=null;S.cleared=false;save();all()}}));
@@ -146,18 +153,25 @@ $('swap').onclick=()=>{[S.org,S.dst]=[S.dst,S.org];save();all()};
 function save(){try{localStorage.setItem(SK+'-od',JSON.stringify({o:S.org,d:S.dst}))}catch(e){}}
 // ---------- tabela editável ----------
 function renderTable(){
-  const H=P.mode==='zone'?'Faixa':'Zona';
-  let h=`<thead><tr><th>${H}</th><th></th><th>Econ. baixa</th><th>Econ. alta</th><th>Exec. baixa</th><th>Exec. alta</th></tr></thead><tbody>`;
-  P.rows.forEach((r,i)=>{h+=`<tr><td><b>${r[0]}</b></td><td class="d">${r[1]}</td>`+[0,1,2,3].map(j=>{const u=VAL[i][j]!==DEF[i][j];return `<td><input id="v${i}_${j}" inputmode="numeric" class="${u?'u':r[3][j]}" value="${VAL[i][j]}" aria-label="${r[0]} ${['econômica baixa','econômica alta','executiva baixa','executiva alta'][j]}"></td>`}).join('')+'</tr>'});
+  const H=P.mode==='zone'?'Faixa':'Banda';
+  let h=`<thead><tr><th rowspan="2">${H}</th><th rowspan="2"></th>`+P.cabins.map(c=>`<th colspan="2" style="text-align:center">${c}</th>`).join('')+`</tr><tr>`+P.cabins.map(()=>'<th>baixa</th><th>alta</th>').join('')+`</tr></thead><tbody>`;
+  P.rows.forEach((r,i)=>{h+=`<tr><td><b>${r.l}</b></td><td class="d">${r.d}</td>`;
+    for(let c=0;c<NC;c++)for(const se of ['off','peak']){const v=VAL[i][se][c],d=DEF[i][se][c];
+      h+= d==null?`<td class="d" style="text-align:center">—</td>`:`<td><input id="v${i}_${se}_${c}" inputmode="numeric" class="${v!==d?'u':r['f'+se][c]}" value="${v}" aria-label="${r.l} ${P.cabins[c]} ${se==='off'?'baixa':'alta'}"></td>`}
+    h+='</tr>'});
   $('pt').innerHTML=h+'</tbody>';
-  $('pt').querySelectorAll('input').forEach(inp=>inp.addEventListener('change',()=>{const [i,j]=inp.id.slice(1).split('_').map(Number);const v=parseInt(inp.value.replace(/\D/g,''),10);if(!isNaN(v)){VAL[i][j]=v;try{localStorage.setItem(SK,JSON.stringify(VAL))}catch(e){}}inp.value=VAL[i][j];inp.className=VAL[i][j]!==DEF[i][j]?'u':P.rows[i][3][j];all(false)}));
+  $('pt').querySelectorAll('input').forEach(inp=>inp.addEventListener('change',()=>{const [i,se,c]=inp.id.slice(1).split('_');const v=parseInt(inp.value.replace(/\D/g,''),10);
+    if(!isNaN(v)){VAL[+i][se][+c]=v;try{localStorage.setItem(SK+'-v2',JSON.stringify(VAL))}catch(e){}}inp.value=VAL[+i][se][+c];inp.className=VAL[+i][se][+c]!==DEF[+i][se][+c]?'u':P.rows[+i]['f'+se][+c];all()}));
+  if(P.upgrades){const U=P.upgrades;let u=`<thead><tr><th rowspan="2">Banda</th>`+U.cols.map(c=>`<th colspan="2" style="text-align:center">${c}</th>`).join('')+`</tr><tr>`+U.cols.map(()=>'<th>baixa</th><th>alta</th>').join('')+`</tr></thead><tbody>`;
+    U.off.forEach((r,i)=>{u+=`<tr><td><b>${P.rows[i].l}</b> <span class="d">${P.rows[i].d}</span></td>`+r.map((v,c)=>`<td class="mono" style="text-align:right">${fmt(v)}</td><td class="mono" style="text-align:right">${fmt(U.peak[i][c])}</td>`).join('')+'</tr>'});
+    $('upt').innerHTML=u+'</tbody>';$('upcard').hidden=false}
 }
-$('reset').onclick=()=>{VAL=DEF.map(r=>r.slice());try{localStorage.removeItem(SK)}catch(e){}renderTable();all(false)};
+$('reset').onclick=()=>{VAL=cp(DEF);try{localStorage.removeItem(SK+'-v2')}catch(e){}renderTable();all()};
 // ---------- planejador ----------
-function rowName(r){return r==null||r<0?'sem faixa':P.rows[r][0]}
+function rowName(r){return r==null||r<0?'sem faixa':P.rows[r].l}
 function renderPlan(){
   $('org').value=S.org;$('dst').value=S.dst;
-  const p=priceOD(S.org,S.dst);const cabN=['Econômica','Executiva'][S.cab];
+  const p=priceOD(S.org,S.dst);const cabN=P.cabinsLong[S.cab];
   $('totlbl').textContent=`Total · ${cabN} · ${S.peak?'alta':'baixa'} temporada · ${S.ow?'só ida':'ida e volta'}`;
   if(!p){$('total').innerHTML='—';$('legs').innerHTML='';$('pnote').textContent='Origem e destino iguais.';return}
   $('total').innerHTML=p.total==null?'—':`${fmt(p.total)} <small>Avios</small>`;
@@ -166,6 +180,8 @@ function renderPlan(){
   let n=`Distância ${S.org} → ${S.dst} em linha reta: <b>${fmt(Math.round(dk/10)*10)} km</b>.`;
   if(p.ls.length>1&&P.mode==='zone')n+=` <span class="warn">Conexão em Doha: valor somado como estimativa; a Qatar pode cobrar o bilhete inteiro por menos.</span>`;
   if(p.ls.length>1&&P.mode==='distance')n+=` Conexão em Madri: cada voo é cobrado pela sua distância e os valores somam.`;
+  if(p.total==null&&p.ls.some(x=>x.v==null))n+=` <span class="warn">Tarifa ${P.cabins[S.cab]} não existe em algum trecho (ex.: Turista Premium só nas bandas 5 a 9; Básica não vale na Ponte Aérea).</span>`;
+  if(P.upgrades){const se=S.peak?'peak':'off';const up=p.ls.map(x=>x.r!=null&&x.r<9?P.upgrades[se][x.r][2]:null);if(up.every(v=>v!=null))n+=` Upgrade Economy → Business neste itinerário: <b>${fmt(up.reduce((a,b)=>a+b,0)*(S.ow?1:2))}</b> Avios.`}
   if(!S.ow)n+=' Ida e volta = o dobro.';
   $('pnote').innerHTML=n;
 }
@@ -189,7 +205,7 @@ let scale=()=>'#999';
 function color(v){return scale(v)}
 function rebuildScale(){const vs=P.airports.filter(a=>a.c!==S.org).map(a=>{const p=priceOD(S.org,a.c);return p&&p.total}).filter(v=>v!=null);const mn=Math.min(...vs),mx=Math.max(...vs);
   scale=v=>d3.interpolateRgbBasis(['#3fd6a0','#e8d76b','#ff7a5c'])(mx===mn?0:(v-mn)/(mx-mn));
-  $('legend').innerHTML=`<span>De ${S.org} · ${['Econômica','Executiva'][S.cab]} · ${S.ow?'só ida':'ida e volta'}</span><div class="bar"></div><div class="ends"><span>${fmt(mn)}</span><span>${fmt(mx)}</span></div>`}
+  $('legend').innerHTML=`<span>De ${S.org} · ${P.cabins[S.cab]} · ${S.ow?'só ida':'ida e volta'}</span><div class="bar"></div><div class="ends"><span>${fmt(mn)}</span><span>${fmt(mx)}</span></div>`}
 function layout(){const r=$('map').getBoundingClientRect();svg.attr('viewBox',`0 0 ${r.width} ${r.height}`);proj.fitExtent([[8,8],[r.width-8,r.height-8]],{type:'Sphere'});
   gC.selectAll('path').data(land).join('path').attr('d',path).attr('fill','#172636').attr('stroke','#0a1119').attr('stroke-width',.5);drawMap()}
 const line=(a,b)=>({type:'LineString',coordinates:[[AP[a].lon,AP[a].lat],[AP[b].lon,AP[b].lat]]});
@@ -218,7 +234,7 @@ function styleZoom(){gR.selectAll('path').attr('stroke-width',1/K);gP.selectAll(
   gA.selectAll('circle').attr('r',function(){const k=this.getAttribute('data-k');return (k==='hub'?6:k==='end'?5.5:k==='reach'?3.6:3)/K}).attr('stroke-width',function(){return (this.getAttribute('data-k')?1.6:.8)/K});
   gL.selectAll('text').attr('font-size',11/K).attr('dx',6/K).attr('dy',-6/K).attr('stroke-width',3/K)}
 function tip(ev,d){const r=$('map').getBoundingClientRect();const q=priceOD(S.org,d.c);
-  $('tip').innerHTML=`<b class="mono">${d.c}</b> ${d.n}, ${d.country}${P.mode==='zone'&&P.zoneOf[d.c]?`<br>${P.rows[P.zoneOf[d.c]-1][0]}: ${P.rows[P.zoneOf[d.c]-1][1]}`:''}${q&&q.total!=null&&d.c!==S.org?`<br>De ${S.org}: <b class="mono">${fmt(q.total)}</b> Avios`:''}`;
+  $('tip').innerHTML=`<b class="mono">${d.c}</b> ${d.n}, ${d.country}${P.zoneOf[d.c]?`<br>${P.rows[P.zoneOf[d.c]-1].l}: ${P.rows[P.zoneOf[d.c]-1].d}`:''}${q&&q.total!=null&&d.c!==S.org?`<br>De ${S.org}: <b class="mono">${fmt(q.total)}</b> Avios`:''}`;
   $('tip').hidden=false;let x=ev.clientX-r.left+12,y=ev.clientY-r.top+12;if(x>r.width-260)x-=272;$('tip').style.left=x+'px';$('tip').style.top=y+'px'}
 function pickAp(c){if(S.cleared){S.pick='org';S.cleared=false}S.focus=c;if(S.pick==='org'){S.org=c;S.pick='dst';if(S.dst===c)S.dst=c===HUB?P.spokes[0]:HUB}else{if(c===S.org)return drawMap();S.dst=c;S.pick='org'}save();all()}
 $('clear').onclick=()=>{S.cleared=true;S.focus=null;S.pick='org';$('tip').hidden=true;svg.transition().duration(400).call(zoom.transform,d3.zoomIdentity);drawMap()};
